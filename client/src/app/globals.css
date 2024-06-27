@@ -1,3 +1,79 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+
+
+
+.blue-gradient_text {
+    background: linear-gradient(to right, #0c3161, #4cacec);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+
+
+
+/* SMALL HORIZONTAL SCROLL BAR DESIGN */
+.custom-small-horizontal-scrollbar {
+    overflow-y: hidden;
+    overflow-x: auto;
+}
+
+.custom-small-horizontal-scrollbar::-webkit-scrollbar {
+    height: 0px; /* For horizontal scrollbars */
+}
+
+.custom-small-horizontal-scrollbar:hover::-webkit-scrollbar {
+    height: 6px; /* For horizontal scrollbars */
+}
+
+.custom-small-horizontal-scrollbar::-webkit-scrollbar-track {
+    background-color: #e0e0e0;
+}
+
+.custom-small-horizontal-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #afa7a7;
+}
+
+.custom-small-horizontal-scrollbar::-webkit-scrollbar-thumb:hover {
+    cursor: pointer;
+    background-color: #928a8a;
+}
+
+@media screen and (max-width: 768px) {
+    .custom-small-horizontal-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+/* END => SMALL HORIZONTAL SCROLL BAR DESIGN */
+
+
+/* PLUS ICON DESIGN */
+.plus-icon {
+    position: relative;
+    width: 2rem;
+    height: 2rem;
+    background-color: transparent;
+}
+  
+.plus-icon::before,
+.plus-icon::after {
+    content: '';
+    position: absolute;
+    width: 2rem;
+    height: 0.25rem;
+    background-color: #3b82f6; /* Tailwind's blue-500 color */
+}
+
+.plus-icon::before {
+    transform: rotate(90deg);   
+}
+
+.plus-icon::after {
+    transform: rotate(0deg);
+}
+  /* END => PLUS ICON DESIGN */

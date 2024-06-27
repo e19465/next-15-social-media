@@ -15,7 +15,9 @@ export default function RootLayout({
 }) {
   return (
     <main className="w-full h-[100vh]" lang="en" suppressHydrationWarning>
-      <div className="w-full h-[100vh]">{children}</div>
+      <div className="w-full h-[100vh] overflow-auto flex items-center justify-center">
+        {children}
+      </div>
     </main>
   );
 }

@@ -17,7 +17,7 @@ const config: Config = {
         mono: ["var(--font-geist-mono)"],
       },
       height: {
-        "calc-100vh-minus-50": "calc(100vh - 50px)",
+        "calc-100vh-minus-80": "calc(100vh - 80px)",
       },
     },
   },

@@ -1,8 +1,4 @@
-import React from "react";
-import { Inter } from "next/font/google";
-import Navbar from "@/components/common/navbar/Navbar";
-
-const inter = Inter({ subsets: ["latin"] });
+import Navbar from "@/components/navbar/Navbar";
 
 export const metadata = {
   title: "Create Next App",
@@ -15,12 +11,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="w-full h-[100vh]" lang="en" suppressHydrationWarning>
-      <div className="w-full h-[100vh]">
-        <div className="w-full h-[50px] bg-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64">
+    <main className="w-full h-screen" lang="en" suppressHydrationWarning>
+      <div className="w-full h-screen flex flex-col">
+        <div className="w-full h-20 bg-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-16 2xl:px-32 border-b border-gray-200">
           <Navbar />
         </div>
-        <div className="w-full h-calc-100vh-minus-50 bg-slate-100 px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64">
+        <div className="flex-1 bg-slate-100 px-2 sm:px-4 md:px-8 lg:px-16 xl:px-16 2xl:px-32 overflow-y-auto">
           {children}
         </div>
       </div>
