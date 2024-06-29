@@ -1,6 +1,6 @@
 "use client";
-import Link from "next/link";
 import { useState, useEffect } from "react";
+import { ProgressLink } from "../nprogress/NProgressHandler";
 
 interface MenuItem {
   id: number;
@@ -90,14 +90,14 @@ const MobileMenu = () => {
         }`}
       >
         {mobileMenu.map((item) => (
-          <Link
+          <ProgressLink
             key={item.id}
             href={item.path}
             className="no-underline text-lg text-blue-500 w-full flex items-center justify-center py-2 mb-1"
             onClick={() => setIsOpen(false)}
           >
             {item.name}
-          </Link>
+          </ProgressLink>
         ))}
       </div>
     </div>

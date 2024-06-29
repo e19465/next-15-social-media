@@ -7,6 +7,8 @@ import HOME_IMAGE from "../../../public/home.png";
 import FRIENDS_IMAGE from "../../../public/friends.png";
 import SETTINGS_IMAGE from "../../../public/settings.png";
 import STORIES_IMAGE from "../../../public/stories.png";
+import { usePathname } from "next/navigation";
+import { ProgressLink } from "../nprogress/NProgressHandler";
 
 //! imports end >>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
 
@@ -45,10 +47,17 @@ const menu: MenuItem[] = [
 ];
 
 const NonMobileMenu = () => {
+  const pathName = usePathname();
   return (
     <div className="flex gap-6 lg:gap-8">
       {menu.map((item) => (
-        <Link key={item.id} href={item.path} className="flex gap-2">
+        <ProgressLink
+          key={item.id}
+          href={item.path}
+          className={`flex gap-2 ${
+            pathName === item.path ? "text-blue-700 font-bold" : "text-gray-500"
+          } ${pathName !== item.path ? "hover:underline" : ""}`}
+        >
           <Image
             src={item.img}
             width={16}
@@ -58,7 +67,7 @@ const NonMobileMenu = () => {
             className="w-4 h-auto object-contain"
           />
           <span>{item.name}</span>
-        </Link>
+        </ProgressLink>
       ))}
     </div>
   );

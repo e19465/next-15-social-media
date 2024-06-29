@@ -1,4 +1,5 @@
 import Navbar from "@/components/navbar/Navbar";
+import NProgressDoneComponent from "@/components/nprogress/NProgressDoneComponent";
 
 export const metadata = {
   title: "Create Next App",
@@ -12,6 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <main className="w-full h-screen" lang="en" suppressHydrationWarning>
+      <NProgressDoneComponent />
       <div className="w-full h-screen flex flex-col">
         <div className="w-full h-20 bg-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-16 2xl:px-32 border-b border-gray-200">
           <Navbar />
