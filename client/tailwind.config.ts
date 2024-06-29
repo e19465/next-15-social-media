@@ -19,6 +19,10 @@ const config: Config = {
       height: {
         "calc-100vh-minus-80": "calc(100vh - 80px)",
       },
+      backgroundImage: {
+        "img-gradient-blue-purple":
+          "linear-gradient(to right, #4F46E5, #8C43FF)",
+      },
     },
   },
   plugins: [],
