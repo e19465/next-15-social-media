@@ -93,3 +93,19 @@
   
 
 /* **! END Nprogress styles */
+
+
+/* ** custom button background with background images */
+
+.custom-btn-bg {
+    background-image: linear-gradient(45deg, #6f1a8a, #6c3daf, #6479d1, #68a5f0, #6cd4f9);
+    background-size: 200% 200%;
+    transition: background-position 0.5s ease-in-out;
+}
+  
+.custom-btn-bg:hover {
+    background-position: 200% 200%;
+    background-image: linear-gradient(45deg, #ab47bc, #ec407a, #f44336, #f06292, #f48fb1);
+}
+
+/* **! end => custom button background with background images */

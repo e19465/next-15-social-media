@@ -25,6 +25,7 @@ const AddNewPost = () => {
           <Image
             src="/emoji.png"
             alt="select an emoji"
+            title="Select an emoji"
             width={24}
             height={24}
             className="w-5 h-5 object-cover rounded-full cursor-pointer self-end"
@@ -35,7 +36,8 @@ const AddNewPost = () => {
           <div className="flex items-center gap-2 cursor-pointer">
             <Image
               src="/addimage.png"
-              alt="add image"
+              alt="post new image"
+              title="Add an image"
               width={20}
               height={20}
               className="w-5 h-5 object-contain"
@@ -45,7 +47,8 @@ const AddNewPost = () => {
           <div className="flex items-center gap-2 cursor-pointer">
             <Image
               src="/addVideo.png"
-              alt="add image"
+              alt="post new video"
+              title="Add a video"
               width={20}
               height={20}
               className="w-5 h-5 object-contain"
@@ -55,7 +58,8 @@ const AddNewPost = () => {
           <div className="flex items-center gap-2 cursor-pointer">
             <Image
               src="/poll.png"
-              alt="add image"
+              alt="add new poll"
+              title="Add a poll"
               width={20}
               height={20}
               className="w-5 h-5 object-contain"
@@ -65,7 +69,8 @@ const AddNewPost = () => {
           <div className="flex items-center gap-2 cursor-pointer">
             <Image
               src="/addevent.png"
-              alt="add image"
+              alt="add new event"
+              title="Add an event"
               width={20}
               height={20}
               className="w-5 h-5 object-contain"

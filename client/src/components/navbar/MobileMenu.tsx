@@ -8,36 +8,42 @@ interface MenuItem {
   path: string;
 }
 
-const mobileMenu: MenuItem[] = [
-  {
-    id: 1,
-    name: "Home",
-    path: "/",
-  },
-  {
-    id: 2,
-    name: "Stories",
-    path: "/stories",
-  },
-  {
-    id: 3,
-    name: "Profile",
-    path: "/profile",
-  },
-  {
-    id: 4,
-    name: "Friends",
-    path: "/friends",
-  },
-  {
-    id: 5,
-    name: "Settings",
-    path: "/settings",
-  },
-];
-
 const MobileMenu = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const userId = "1";
+
+  const mobileMenu: MenuItem[] = [
+    {
+      id: 1,
+      name: "Home",
+      path: "/",
+    },
+    {
+      id: 2,
+      name: "Profile",
+      path: `/profile/${userId}`,
+    },
+    {
+      id: 3,
+      name: "Stories",
+      path: "/stories",
+    },
+    {
+      id: 4,
+      name: "Profile",
+      path: "/profile",
+    },
+    {
+      id: 5,
+      name: "Friends",
+      path: "/friends",
+    },
+    {
+      id: 6,
+      name: "Settings",
+      path: "/settings",
+    },
+  ];
 
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
