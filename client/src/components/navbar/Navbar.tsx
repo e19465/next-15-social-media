@@ -20,7 +20,7 @@ const Navbar = () => {
       suppressHydrationWarning
     >
       {/* LEFT => Logo */}
-      <div className={`w-[40%] md:w-[20%]`}>
+      <div className={`w-[40%] md:w-[20%] py-2`}>
         <Logo />
       </div>
 

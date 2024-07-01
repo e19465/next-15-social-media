@@ -7,7 +7,7 @@ const ProfilePage = ({ params }: { params: any }) => {
     <div className="w-full h-full flex gap-4">
       {/* LEFT */}
       <div className="hidden xl:block xl:w-[20%]">
-        <LeftMenu />
+        <LeftMenu type="profile" />
       </div>
 
       {/* CENTER */}

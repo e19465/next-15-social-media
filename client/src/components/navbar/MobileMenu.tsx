@@ -31,7 +31,7 @@ const MobileMenu = () => {
     {
       id: 4,
       name: "Profile",
-      path: "/profile",
+      path: `/profile/${userId}`,
     },
     {
       id: 5,
@@ -76,17 +76,17 @@ const MobileMenu = () => {
       >
         <div
           className={`w-6 h-1 bg-blue-500 rounded-sm transition-transform duration-300 ease-in-out ${
-            isOpen ? "rotate-45 translate-y-2" : ""
+            isOpen && "rotate-45 translate-y-2"
           }`}
         />
         <div
           className={`w-6 h-1 bg-blue-500 rounded-sm transition-opacity duration-300 ease-in-out ${
-            isOpen ? "opacity-0" : ""
+            isOpen && "opacity-0"
           }`}
         />
         <div
           className={`w-6 h-1 bg-blue-500 rounded-sm transition-transform duration-300 ease-in-out ${
-            isOpen ? "-rotate-45 -translate-y-2" : ""
+            isOpen && "-rotate-45 -translate-y-2"
           }`}
         />
       </div>
