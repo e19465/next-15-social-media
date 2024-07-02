@@ -1,4 +1,4 @@
-# <div align="center"><span style="color:dodgerblue;">SD</span><span style="color:rebeccapurple;">Social</span></div>
+# <div align="center"><span style="color:dodgerblue">SD</span><span style="color:rebeccapurple">Social</span></div>
 
 ![SDSocial Demo](demo.gif)
 
