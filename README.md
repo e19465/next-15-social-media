@@ -2,7 +2,7 @@
 
 ![SDSocial Demo](demo.gif)
 
-
+## Homepage
 ![](https://github.com/e19465/next-15-social-media/blob/main/public/screenshot.PNG?raw=true)
 
 SDSocial is a social networking platform built with modern technologies including Next.js 15, React 19, Prisma, Amazon RDS MySQL, TypeScript, and Tailwind CSS. Authentication is provided by Clerk.
