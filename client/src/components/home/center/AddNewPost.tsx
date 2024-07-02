@@ -1,6 +1,8 @@
 import Image from "next/image";
+import { auth } from "@clerk/nextjs/server";
 
 const AddNewPost = () => {
+  const { userId } = auth();
   return (
     <div className="p-4 bg-white rounded-lg flex gap-4 justify-between text-sm shadow-md mt-4">
       {/* AVATAR */}
@@ -14,7 +16,7 @@ const AddNewPost = () => {
       {/* POST */}
       <div className="flex-1">
         {/* TEXT INPUT */}
-        <div className="flex gap-4">
+        <form action="" className="flex gap-4">
           <textarea
             name="add-post-text-area"
             id="add-post-text-area"
@@ -22,15 +24,28 @@ const AddNewPost = () => {
             placeholder="What's on your mind?"
             className="w-full h-20 p-2 bg-slate-100 rounded-lg resize-none flex-1 outline-blue-500"
           />
-          <Image
-            src="/emoji.png"
-            alt="select an emoji"
-            title="Select an emoji"
-            width={24}
-            height={24}
-            className="w-5 h-5 object-cover rounded-full cursor-pointer self-end"
-          />
-        </div>
+          <input type="hidden" name="userId" value={userId ?? ""} />
+          <div className="flex items-center gap-2 self-end">
+            <Image
+              src="/emoji.png"
+              alt="select an emoji"
+              title="Select an emoji"
+              width={24}
+              height={24}
+              className="w-5 h-5 object-cover rounded-full cursor-pointer"
+            />
+            <button type="submit" title="add post submit button">
+              <Image
+                src="/share.png"
+                alt="add new post button"
+                title="Add new post button"
+                width={24}
+                height={24}
+                className="w-5 h-5 object-cover cursor-pointer"
+              />
+            </button>
+          </div>
+        </form>
         {/* POST OPTIONS */}
         <div className="flex items-center gap-6 mt-4 text-gray-400 flex-wrap">
           <div className="flex items-center gap-2 cursor-pointer">

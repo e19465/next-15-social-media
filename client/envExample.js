@@ -1,0 +1,7 @@
+const NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY = "";
+const CLERK_SECRET_KEY = "";
+const NEXT_PUBLIC_CLERK_SIGN_IN_URL = "/sign-in";
+const NEXT_PUBLIC_CLERK_SIGN_UP_URL = "/sign-up";
+const DATABASE_URL =
+  "{DATABASE_DRIVER}://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_HOST}/{DATABASE_NAME}";
+const NODE_ENV = "development or production";
