@@ -1,18 +1,55 @@
+import Spinner from "@/components/Spinner";
+import { prisma } from "@/lib/client";
+import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 
-const CenterProileCard = () => {
+const formatNumber = (num: number): string => {
+  if (num >= 1e9) {
+    return (num / 1e9).toFixed(1) + "B";
+  }
+  if (num >= 1e6) {
+    return (num / 1e6).toFixed(1) + "M";
+  }
+  if (num >= 1e3) {
+    return (num / 1e3).toFixed(1) + "k";
+  }
+  return num.toString();
+};
+
+const CenterProfileCard: React.FC = async () => {
+  const { userId } = auth();
+  if (!userId) {
+    return <Spinner />;
+  }
+
+  const user = await prisma.user.findFirst({
+    where: {
+      id: userId,
+    },
+    include: {
+      _count: {
+        select: {
+          followers: true,
+          followings: true,
+          posts: true,
+        },
+      },
+    },
+  });
+
+  if (!user) return null;
   return (
     <div className="w-full p-4 bg-white rounded-lg flex flex-col gap-6 justify-between shadow-md">
       {/* IMAGE CONTAINER */}
       <div className="h-60 relative">
         <Image
-          src="https://images.pexels.com/photos/133633/pexels-photo-133633.jpeg?auto=compress&cs=tinysrgb&w=600"
+          src={user.cover || ""}
           alt="profile cover image"
           fill
           className="rounded-lg object-cover z-1"
         />
         <Image
-          src="https://images.pexels.com/photos/1468379/pexels-photo-1468379.jpeg?auto=compress&cs=tinysrgb&w=600"
+          src={user.avatar || ""}
           alt="profile cover image"
           height={112}
           width={112}
@@ -22,21 +59,31 @@ const CenterProileCard = () => {
 
       {/* USER DETAILS */}
       <div className="pt-10 flex flex-col items-center gap-6 capitalize">
-        <span className="text-gray-700 text-xl font-bold">Sasindu dilshan</span>
+        <span className="text-gray-700 text-xl font-bold">
+          {user.name && user.surname
+            ? `${user.name} ${user.surname}`
+            : user.username}
+        </span>
 
         {/* OTHER DETAILS followers, following, posts */}
         <div className="flex gap-10">
           <div className="flex flex-col items-center gap-1">
-            <span className="text-gray-700 text-base font-bold">142</span>
-            <span className="text-gray-500 text-sm">posts</span>
+            <span className="text-gray-700 text-base font-bold">
+              {formatNumber(user._count.posts)}
+            </span>
+            <span className="text-blue-500 text-sm">posts</span>
           </div>
           <div className="flex flex-col items-center gap-1">
-            <span className="text-gray-700 text-base font-bold">1.2k</span>
-            <span className="text-gray-500 text-sm">followers</span>
+            <span className="text-gray-700 text-base font-bold">
+              {formatNumber(user._count.followers)}
+            </span>
+            <span className="text-blue-500 text-sm">followers</span>
           </div>
           <div className="flex flex-col items-center gap-1">
-            <span className="text-gray-700 text-base font-bold">1.4k</span>
-            <span className="text-gray-500 text-sm">following</span>
+            <span className="text-gray-700 text-base font-bold">
+              {formatNumber(user._count.followings)}
+            </span>
+            <span className="text-blue-500 text-sm">following</span>
           </div>
         </div>
       </div>
@@ -46,4 +93,4 @@ const CenterProileCard = () => {
   );
 };
 
-export default CenterProileCard;
+export default CenterProfileCard;

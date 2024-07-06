@@ -1,20 +1,42 @@
 import { ProgressLink } from "@/components/nprogress/NProgressHandler";
+import Spinner from "@/components/Spinner";
+import { prisma } from "@/lib/client";
+import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 
-const ProfileCard = () => {
-  const user_id = 1;
+const ProfileCard = async () => {
+  const { userId } = auth();
+  if (!userId) {
+    return <Spinner />;
+  }
+
+  const user = await prisma.user.findFirst({
+    where: {
+      id: userId,
+    },
+    include: {
+      _count: {
+        select: {
+          followers: true,
+        },
+      },
+    },
+  });
+
+  if (!user) return null;
+
   return (
     <div className="p-4 bg-white rounded-lg flex flex-col gap-6 justify-between shadow-md">
       {/* IMAGE CONTAINER */}
       <div className="h-20 relative">
         <Image
-          src="https://images.pexels.com/photos/133633/pexels-photo-133633.jpeg?auto=compress&cs=tinysrgb&w=600"
+          src={user?.cover || ""}
           alt="profile cover image"
           fill
           className="rounded-lg object-cover z-1"
         />
         <Image
-          src="https://images.pexels.com/photos/1468379/pexels-photo-1468379.jpeg?auto=compress&cs=tinysrgb&w=600"
+          src={user?.avatar || ""}
           alt="profile cover image"
           height={64}
           width={64}
@@ -24,7 +46,11 @@ const ProfileCard = () => {
 
       {/* USER DETAILS */}
       <div className="pt-4 flex flex-col items-center gap-2 capitalize">
-        <span className="text-gray-700 text-xl">Sasindu dilshan</span>
+        <span className="text-gray-700 text-xl">
+          {user?.name && user?.surname
+            ? `${user?.name} ${user?.surname}`
+            : user?.username}
+        </span>
         <div className="flex gap-2">
           <Image
             src="https://images.pexels.com/photos/5011647/pexels-photo-5011647.jpeg?auto=compress&cs=tinysrgb&w=600"
@@ -33,13 +59,15 @@ const ProfileCard = () => {
             alt="icon image"
             className="w-4 h-4 object-cover rounded-full"
           />
-          <span className="text-sm text-blue-500">500 followers</span>
+          <span className="text-sm text-blue-500">
+            {user?._count?.followers + " followers"}
+          </span>
         </div>
       </div>
 
       {/* PROFILE BUTTON */}
       <ProgressLink
-        href={`/profile/${user_id}`}
+        href={`/profile/${userId}`}
         className="custom-btn-bg p-2 text-base capitalize text-white flex items-center justify-center rounded-lg"
       >
         my profile
