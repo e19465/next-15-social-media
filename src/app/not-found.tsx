@@ -4,7 +4,7 @@ import { ProgressLink } from "@/components/nprogress/NProgressHandler";
 
 const NotFound = () => {
   return (
-    <section className="w-full h-screen flex flex-col items-center justify-center bg-gray-100">
+    <section className="fixed top-0 left-0 z-[1000] w-full h-screen flex flex-col items-center justify-center bg-gray-100">
       <Image
         src={NOT_FOUND_IMG}
         alt="Not Found"

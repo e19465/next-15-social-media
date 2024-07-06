@@ -1,4 +1,4 @@
-import Spinner from "@/components/Spinner";
+import NotFound from "@/app/not-found";
 import { prisma } from "@/lib/client";
 import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
@@ -16,12 +16,8 @@ const formatNumber = (num: number): string => {
   return num.toString();
 };
 
-const CenterProfileCard: React.FC = async () => {
-  const { userId } = auth();
-  if (!userId) {
-    return <Spinner />;
-  }
-
+const CenterProfileCard = async ({ userId }: { userId?: string }) => {
+  if (!userId) return null;
   const user = await prisma.user.findFirst({
     where: {
       id: userId,
@@ -37,19 +33,40 @@ const CenterProfileCard: React.FC = async () => {
     },
   });
 
-  if (!user) return null;
+  if (!user) return <NotFound />;
+
+  let isBlocked;
+  const { userId: currentUserId } = auth();
+  if (currentUserId && currentUserId !== userId) {
+    const res = await prisma.blockRequest.findFirst({
+      where: {
+        blockedId: userId,
+        blockerId: currentUserId,
+      },
+    });
+    if (res) {
+      isBlocked = true;
+    } else {
+      isBlocked = false;
+    }
+  } else {
+    isBlocked = false;
+  }
+
+  if (isBlocked) return <NotFound />;
+
   return (
     <div className="w-full p-4 bg-white rounded-lg flex flex-col gap-6 justify-between shadow-md">
       {/* IMAGE CONTAINER */}
       <div className="h-60 relative">
         <Image
-          src={user.cover || ""}
+          src={user.cover || "/noCover.png"}
           alt="profile cover image"
           fill
           className="rounded-lg object-cover z-1"
         />
         <Image
-          src={user.avatar || ""}
+          src={user.avatar || "/noAvatar.png"}
           alt="profile cover image"
           height={112}
           width={112}
@@ -87,8 +104,6 @@ const CenterProfileCard: React.FC = async () => {
           </div>
         </div>
       </div>
-
-      {/* PROFILE BUTTON */}
     </div>
   );
 };

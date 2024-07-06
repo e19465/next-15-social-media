@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import { ProgressLink } from "../nprogress/NProgressHandler";
+import Spinner from "../Spinner";
+import { useAuth } from "@clerk/nextjs";
 
 interface MenuItem {
   id: number;
@@ -10,7 +12,7 @@ interface MenuItem {
 
 const MobileMenu = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const userId = "1";
+  const { userId } = useAuth();
 
   const mobileMenu: MenuItem[] = [
     {
@@ -30,16 +32,11 @@ const MobileMenu = () => {
     },
     {
       id: 4,
-      name: "Profile",
-      path: `/profile/${userId}`,
-    },
-    {
-      id: 5,
       name: "Friends",
       path: "/friends",
     },
     {
-      id: 6,
+      id: 5,
       name: "Settings",
       path: "/settings",
     },
@@ -65,48 +62,54 @@ const MobileMenu = () => {
   }, [isOpen]);
 
   return (
-    <div>
-      <div
-        id="burger-button"
-        className="flex flex-col gap-1 cursor-pointer md:hidden"
-        onClick={(e) => {
-          e.stopPropagation();
-          setIsOpen((prev) => !prev);
-        }}
-      >
-        <div
-          className={`w-6 h-1 bg-blue-500 rounded-sm transition-transform duration-300 ease-in-out ${
-            isOpen && "rotate-45 translate-y-2"
-          }`}
-        />
-        <div
-          className={`w-6 h-1 bg-blue-500 rounded-sm transition-opacity duration-300 ease-in-out ${
-            isOpen && "opacity-0"
-          }`}
-        />
-        <div
-          className={`w-6 h-1 bg-blue-500 rounded-sm transition-transform duration-300 ease-in-out ${
-            isOpen && "-rotate-45 -translate-y-2"
-          }`}
-        />
-      </div>
-      <div
-        className={`flex flex-col items-center justify-center fixed top-[80px] right-0 w-full sm:w-1/2 h-calc-100vh-minus-80 bg-white z-[1000] transition-transform duration-300 ease-in-out ${
-          isOpen ? "transform translate-x-0" : "transform translate-x-full"
-        }`}
-      >
-        {mobileMenu.map((item) => (
-          <ProgressLink
-            key={item.id}
-            href={item.path}
-            className="no-underline text-lg text-blue-500 w-full flex items-center justify-center py-2 mb-1"
-            onClick={() => setIsOpen(false)}
+    <>
+      {!userId ? (
+        <Spinner />
+      ) : (
+        <div>
+          <div
+            id="burger-button"
+            className="flex flex-col gap-1 cursor-pointer md:hidden"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsOpen((prev) => !prev);
+            }}
           >
-            {item.name}
-          </ProgressLink>
-        ))}
-      </div>
-    </div>
+            <div
+              className={`w-6 h-1 bg-blue-500 rounded-sm transition-transform duration-300 ease-in-out ${
+                isOpen && "rotate-45 translate-y-2"
+              }`}
+            />
+            <div
+              className={`w-6 h-1 bg-blue-500 rounded-sm transition-opacity duration-300 ease-in-out ${
+                isOpen && "opacity-0"
+              }`}
+            />
+            <div
+              className={`w-6 h-1 bg-blue-500 rounded-sm transition-transform duration-300 ease-in-out ${
+                isOpen && "-rotate-45 -translate-y-2"
+              }`}
+            />
+          </div>
+          <div
+            className={`flex flex-col items-center justify-center fixed top-[80px] right-0 w-full sm:w-1/2 h-calc-100vh-minus-80 bg-white z-[1000] transition-transform duration-300 ease-in-out ${
+              isOpen ? "transform translate-x-0" : "transform translate-x-full"
+            }`}
+          >
+            {mobileMenu.map((item) => (
+              <ProgressLink
+                key={item.id}
+                href={item.path}
+                className="no-underline text-lg text-blue-500 w-full flex items-center justify-center py-2 mb-1"
+                onClick={() => setIsOpen(false)}
+              >
+                {item.name}
+              </ProgressLink>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

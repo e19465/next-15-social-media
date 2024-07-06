@@ -8,7 +8,7 @@ const CenterMenu = ({ userId }: { userId?: string }) => {
     <div className="w-full h-calc-100vh-minus-80 p-2 bg-slate-100 shadow-md overflow-auto flex flex-col scrollbar-hide">
       {!userId && <Stories />}
       {!userId && <AddNewPost />}
-      {userId && <CenterProileCard />}
+      {userId && <CenterProileCard userId={userId} />}
       <PostFeed />
     </div>
   );
