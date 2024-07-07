@@ -40,8 +40,8 @@ const UserInformation = async ({ userId }: { userId?: string }) => {
     //! Check if the currentuser is following the user
     const isFollowingResponse = await prisma.follower.findFirst({
       where: {
-        followerId: currentUserId,
-        followingId: userId,
+        followerId: userId,
+        followingId: currentUserId,
       },
     });
     isFollowingResponse ? (isFollowing = true) : (isFollowing = false);

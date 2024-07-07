@@ -25,8 +25,8 @@ export const switchFollow = async (userId: string, currentUserId: string) => {
       });
     } else {
       //! If the user is not following the user, check if there is a follow request sent
-      const existingFollowRequest = await prisma.followRequest.create({
-        data: {
+      const existingFollowRequest = await prisma.followRequest.findFirst({
+        where: {
           senderId: currentUserId,
           recieverId: userId,
         },
@@ -41,10 +41,10 @@ export const switchFollow = async (userId: string, currentUserId: string) => {
         });
       } else {
         //! If there is no follow request sent, send a follow request
-        await prisma.follower.create({
+        await prisma.followRequest.create({
           data: {
-            followerId: currentUserId,
-            followingId: userId,
+            senderId: currentUserId,
+            recieverId: userId,
           },
         });
       }
@@ -120,6 +120,91 @@ export const switchBlock = async (userId: string, currentUserId: string) => {
       });
 
       return "blocked";
+    }
+  } catch (err) {
+    console.log(err);
+    throw new Error("Something went wrong. Please try again later.");
+  }
+};
+
+//! function to accept follow request
+export const acceptFollowRequest = async (
+  senderId: string,
+  currentUserId: string
+) => {
+  if (!currentUserId)
+    throw new Error("You must be logged in to accept follow requests.");
+  if (!senderId)
+    throw new Error("You must provide a user to accept follow request.");
+  if (senderId === currentUserId)
+    throw new Error("You can't accept follow request from yourself.");
+
+  try {
+    //! Check if the currentUser has recieved a follow request from the sender
+    const existingFollowRequest = await prisma.followRequest.findFirst({
+      where: {
+        senderId: senderId,
+        recieverId: currentUserId,
+      },
+    });
+
+    //! If the currentUser has recieved a follow request from the sender, delete the follow request and create a follower record
+    if (existingFollowRequest) {
+      await prisma.followRequest.delete({
+        where: {
+          id: existingFollowRequest.id,
+        },
+      });
+
+      await prisma.follower.create({
+        data: {
+          followerId: currentUserId,
+          followingId: senderId,
+        },
+      });
+
+      return "accepted";
+    } else {
+      throw new Error("No follow request found.");
+    }
+  } catch (err) {
+    console.log(err);
+    throw new Error("Something went wrong. Please try again later.");
+  }
+};
+
+//! Function to reject follow request
+export const rejectFollowRequest = async (
+  senderId: string,
+  currentUserId: string
+) => {
+  if (!currentUserId)
+    throw new Error("You must be logged in to reject follow requests.");
+  if (!senderId)
+    throw new Error("You must provide a user to reject follow request.");
+  if (senderId === currentUserId)
+    throw new Error("You can't reject follow request from yourself.");
+
+  try {
+    //! Check if the currentUser has recieved a follow request from the sender
+    const existingFollowRequest = await prisma.followRequest.findFirst({
+      where: {
+        senderId: senderId,
+        recieverId: currentUserId,
+      },
+    });
+
+    //! If the currentUser has recieved a follow request from the sender, delete the follow request
+    if (existingFollowRequest) {
+      await prisma.followRequest.delete({
+        where: {
+          id: existingFollowRequest.id,
+        },
+      });
+
+      return "rejected";
+    } else {
+      throw new Error("No follow request found.");
     }
   } catch (err) {
     console.log(err);

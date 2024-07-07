@@ -54,26 +54,27 @@ const BlockModel: React.FC<BlockModelProps> = ({
         className="w-[250px] sm:w-[400px] h-[180px]  rounded-md flex items-center justify-center flex-col bg-[#1a1a2e] p-2 shadow-md shadow-blue-900"
         onClick={(e) => e.stopPropagation()}
       >
-        <p className="pl-4 w-full text-white text-left text-lg">
+        <p className="pl-4 w-full text-red-500 text-left text-lg">
           Are you sure?
         </p>
         <p className="pl-4 w-full text-gray-200 text-left text-sm my-2">
-          After you blocked this user you don&apos;t get any updates from them.
-          If you really need to block this user, press confirm
+          After you blocked this user you don&apos;t get any updates from this
+          user. If you really need to block this user, press confirm.
         </p>
         <div className="mt-[10px] w-full h-auto flex items-center justify-end gap-2 pr-4">
           <button
             type="button"
-            className="p-2 bg-transparent border border-white text-white rounded-md"
+            className="
+            p-2 bg-transparent border border-red-500 text-red-500 rounded-md hover:bg-red-500 hover:text-white transition-colors duration-300"
             onClick={() => setBlockClicked(false)}
           >
             cancel
           </button>
           <button
             type="submit"
-            className={`p-2 bg-white text-black rounded-md ${
+            className={`p-2  rounded-md border border-white text-white ${
               blockedLoading && "cursor-not-allowed opacity-50"
-            }`}
+            } hover:bg-white hover:text-black transition-colors duration-300`}
             disabled={blockedLoading}
           >
             {blockedLoading ? "loading..." : "confirm"}
