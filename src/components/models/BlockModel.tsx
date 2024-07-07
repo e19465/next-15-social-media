@@ -1,0 +1,87 @@
+import { switchBlock } from "@/lib/actions";
+import { useRouter } from "next/navigation";
+
+interface BlockModelProps {
+  setBlockClicked: React.Dispatch<React.SetStateAction<boolean>>;
+  setBlockedLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setUserState: React.Dispatch<
+    React.SetStateAction<{
+      isBlocked: boolean;
+      isFollowing: boolean;
+      isFollowRequestSent: boolean;
+    }>
+  >;
+  blockedLoading: boolean;
+  userId: string;
+  currentUserId: string;
+}
+
+const BlockModel: React.FC<BlockModelProps> = ({
+  setBlockClicked,
+  setBlockedLoading,
+  setUserState,
+  blockedLoading,
+  userId,
+  currentUserId,
+}) => {
+  const router = useRouter();
+  const block = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBlockedLoading(true);
+    try {
+      const res = await switchBlock(userId, currentUserId);
+      setUserState((prev) => ({
+        ...prev,
+        isBlocked: !prev.isBlocked,
+      }));
+      setBlockedLoading(false);
+      setBlockClicked(false);
+      if (res == "blocked") {
+        router.push("/");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  return (
+    <section
+      className="w-full h-screen z-[999] fixed top-0 left-0 bg-[rgba(255,255,255,0.5)] flex items-center justify-center"
+      onClick={() => setBlockClicked(false)}
+    >
+      <form
+        onSubmit={block}
+        className="w-[250px] sm:w-[400px] h-[180px]  rounded-md flex items-center justify-center flex-col bg-[#1a1a2e] p-2 shadow-md shadow-blue-900"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <p className="pl-4 w-full text-white text-left text-lg">
+          Are you sure?
+        </p>
+        <p className="pl-4 w-full text-gray-200 text-left text-sm my-2">
+          After you blocked this user you don&apos;t get any updates from them.
+          If you really need to block this user, press confirm
+        </p>
+        <div className="mt-[10px] w-full h-auto flex items-center justify-end gap-2 pr-4">
+          <button
+            type="button"
+            className="p-2 bg-transparent border border-white text-white rounded-md"
+            onClick={() => setBlockClicked(false)}
+          >
+            cancel
+          </button>
+          <button
+            type="submit"
+            className={`p-2 bg-white text-black rounded-md ${
+              blockedLoading && "cursor-not-allowed opacity-50"
+            }`}
+            disabled={blockedLoading}
+          >
+            {blockedLoading ? "loading..." : "confirm"}
+          </button>
+        </div>
+      </form>
+    </section>
+  );
+};
+
+export default BlockModel;

@@ -149,13 +149,15 @@ const UserInformation = async ({ userId }: { userId?: string }) => {
       </div>
 
       {/* FOLLOWING BUTTON AND BLOCK BUTTON */}
-      <FollowBlockUserButtons
-        userId={userId}
-        currentUserId={currentUserId}
-        isBlocked={isBlocked}
-        isFollowing={isFollowing}
-        isFollowRequestSent={isFollowRequestSent}
-      />
+      {userId !== currentUserId && (
+        <FollowBlockUserButtons
+          userId={userId}
+          currentUserId={currentUserId}
+          isBlocked={isBlocked}
+          isFollowing={isFollowing}
+          isFollowRequestSent={isFollowRequestSent}
+        />
+      )}
     </div>
   );
 };

@@ -1,4 +1,3 @@
-import Image from "next/image";
 import AddNewStory from "./AddNewStory";
 import SingleStory from "./SingleStory";
 

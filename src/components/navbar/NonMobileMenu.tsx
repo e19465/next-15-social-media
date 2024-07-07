@@ -1,15 +1,16 @@
+"use client";
 import { StaticImageData } from "next/image";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { ProgressLink } from "../nprogress/NProgressHandler";
+import Spinner from "../Spinner";
+import { useAuth } from "@clerk/nextjs";
 
 // image imports
 import FRIENDS_IMAGE from "../../../public/friends.png";
 import SETTINGS_IMAGE from "../../../public/settings.png";
 import STORIES_IMAGE from "../../../public/stories.png";
 import PROFILE_IMAGE from "../../../public/profile.png";
-import { usePathname } from "next/navigation";
-import { ProgressLink } from "../nprogress/NProgressHandler";
-import Spinner from "../Spinner";
-import { useAuth } from "@clerk/nextjs";
 
 //! imports end >>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
 
