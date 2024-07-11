@@ -256,3 +256,41 @@ export const updateUserInformation = async (userId: string, data: any) => {
     throw new Error("Something went wrong. Please try again later.");
   }
 };
+
+//! Function to like / unlike a post
+export const switchLike = async (postId: number, currentUserId: string) => {
+  if (!currentUserId) throw new Error("You must be logged in to like posts.");
+  if (!postId) throw new Error("You must provide a post to like.");
+
+  try {
+    //! Check if the user has already liked the post
+    const existingLike = await prisma.like.findFirst({
+      where: {
+        userId: currentUserId,
+        postId: postId,
+      },
+    });
+
+    //! If the user has already liked the post, unlike it
+    if (existingLike) {
+      await prisma.like.delete({
+        where: {
+          id: existingLike.id,
+        },
+      });
+      return "unliked";
+    } else {
+      //! If the user has not liked the post, like it
+      await prisma.like.create({
+        data: {
+          userId: currentUserId,
+          postId: postId,
+        },
+      });
+      return "liked";
+    }
+  } catch (err) {
+    console.log(err);
+    throw new Error("Something went wrong. Please try again later.");
+  }
+};

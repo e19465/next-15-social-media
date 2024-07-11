@@ -9,11 +9,14 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
 const UpdateUserButton = ({ currentUser }: { currentUser: User }) => {
+  // Get router from next/navigation
   const router = useRouter();
   // Define states
   const [isEditFormOpen, setIsEditFormOpen] = useState<Boolean>(false);
   const [userData, setUserData] = useState<User>({ ...currentUser });
-  const [coverImageUrl, setCoverImageUrl] = useState<string>("");
+  const [coverImageUrl, setCoverImageUrl] = useState<string>(
+    userData?.cover || ""
+  );
   const [userDataUpdateLoading, setUserDataUpdateLoading] = useState<
     Boolean | any
   >(false);
@@ -67,6 +70,7 @@ const UpdateUserButton = ({ currentUser }: { currentUser: User }) => {
   const handleCoverPictureUpdate = async () => {
     if (coverImageUrl === "") {
       alert("Please upload an image first.");
+      return;
     }
     setCoverPhotoLoading(true);
     try {

@@ -18,7 +18,7 @@ const ProfilePage = ({ params }: { params: any }) => {
 
       {/* CENTER */}
       <div className="w-full lg:w-[70%] xl:w-[50%]">
-        <CenterMenu userId={params.userId} />
+        <CenterMenu userId={params.userId} location="profile" />
       </div>
 
       {/* RIGHT */}

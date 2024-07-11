@@ -2,7 +2,7 @@ import Navbar from "@/components/navbar/Navbar";
 import NProgressDoneComponent from "@/components/nprogress/NProgressDoneComponent";
 
 export const metadata = {
-  title: "SDSOCIAL ",
+  title: "SDSOCIAL",
   description: "sdsocial is a social media platform",
 };
 

@@ -9,14 +9,17 @@ type RequestWithUser = FollowRequest & {
 };
 
 const FriendRequestList = ({ requests }: { requests: RequestWithUser[] }) => {
+  // define request state
   const [requestsState, setRequestsState] =
     useState<RequestWithUser[]>(requests);
 
+  // define optimistic requests state for better UI experience
   const [optimisticRequests, setOptimisticRequests] = useOptimistic(
     requestsState,
     (state, value: number) => state.filter((request) => request.id !== value)
   );
 
+  // handle follow request accept
   const handleFollowRequestAccept = async (request: RequestWithUser) => {
     setOptimisticRequests(request.id);
     try {
@@ -27,6 +30,7 @@ const FriendRequestList = ({ requests }: { requests: RequestWithUser[] }) => {
     }
   };
 
+  // handle follow request reject
   const handleFollowRequestReject = async (request: RequestWithUser) => {
     setOptimisticRequests(request.id);
     try {

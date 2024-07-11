@@ -1,10 +1,10 @@
-import { ProgressLink } from "@/components/nprogress/NProgressHandler";
 import Image from "next/image";
+import Link from "next/link";
+import UpdateUserButton from "./UpdateUserButton";
 import FollowBlockUserButtons from "./FollowBlockUserButtons";
+import { ProgressLink } from "@/components/nprogress/NProgressHandler";
 import { prisma } from "@/lib/client";
 import { auth } from "@clerk/nextjs/server";
-import UpdateUserButton from "./UpdateUserButton";
-import Link from "next/link";
 
 const UserInformation = async ({ userId }: { userId?: string }) => {
   if (!userId) return null;

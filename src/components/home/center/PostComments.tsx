@@ -1,40 +1,25 @@
-"use client";
 import Image from "next/image";
 import SingleComment from "./SingleComment";
-import { useState } from "react";
+import { Post, User } from "@prisma/client";
+import { prisma } from "@/lib/client";
 
-interface Comment {
-  id: number;
-  user: {
-    name: string;
-    image: string;
-  };
-  comment: string;
-}
-
-const comments_array: Comment[] = [
-  {
-    id: 1,
-    user: {
-      name: "John Doe",
-      image:
-        "https://images.pexels.com/photos/775358/pexels-photo-775358.jpeg?auto=compress&cs=tinysrgb&w=600",
+const PostComments = async ({ postId }: { postId: number }) => {
+  const comments = await prisma.comment.findMany({
+    where: {
+      postId: postId,
     },
-    comment: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-  {
-    id: 2,
-    user: {
-      name: "Jane Doe",
-      image:
-        "https://images.pexels.com/photos/775358/pexels-photo-775358.jpeg?auto=compress&cs=tinysrgb&w=600",
+    include: {
+      user: true,
+      _count: {
+        select: {
+          likes: true,
+        },
+      },
     },
-    comment: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-];
+  });
+  if (!comments) return null;
 
-const PostComments = () => {
-  const [comments, setComments] = useState<Comment[]>(comments_array);
+  console.log(comments);
 
   return (
     <div className="w-full flex flex-col items-center gap-4">

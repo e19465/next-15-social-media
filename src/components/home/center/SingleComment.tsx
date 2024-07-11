@@ -1,23 +1,20 @@
+import { Comment, User } from "@prisma/client";
 import Image from "next/image";
 
-interface SingleCommentProps {
-  comment: {
-    id: number;
-    user: {
-      name: string;
-      image: string;
-    };
-    comment: string;
+type SingleCommentProps = Comment & {
+  user: User;
+  _count: {
+    likes: number;
   };
-}
+};
 
-const SingleComment: React.FC<SingleCommentProps> = ({ comment }) => {
+const SingleComment = ({ comment }: { comment: SingleCommentProps }) => {
   return (
     <div className="w-full flex items-start gap-4">
       {/* COMMENT OWNER IMAGE */}
       <Image
-        src={comment.user.image}
-        alt={`${comment.user.name}'s profile photo`}
+        src={comment.user.avatar || "/noAvatar.png"}
+        alt={`${comment.user.username}'s profile photo`}
         width={32}
         height={32}
         className="w-8 h-8 object-cover rounded-full"
@@ -26,9 +23,9 @@ const SingleComment: React.FC<SingleCommentProps> = ({ comment }) => {
       {/*  COMMENT DETAILS SETION */}
       <div className="flex flex-col flex-1">
         <span className="font-medium text-sm text-gray-500">
-          {comment.user.name}
+          {comment.user.username}
         </span>
-        <p className="text-xs text-gray-700">{comment.comment}</p>
+        <p className="text-xs text-gray-700">{comment.text}</p>
 
         {/* COMMENT LIKE AND REPLY */}
         <div className="flex items-center gap-4 text-xs mt-2">
@@ -42,7 +39,7 @@ const SingleComment: React.FC<SingleCommentProps> = ({ comment }) => {
               className="object-contain cursor-pointer"
             />
             <span className="text-gray-300">|</span>
-            <span className="text-gray-500">123</span>
+            <span className="text-gray-500">{comment._count.likes}</span>
             <span className="text-gray-400 hidden md:inline">Likes</span>
           </div>
           <button

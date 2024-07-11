@@ -4,7 +4,7 @@ import LeftMenu from "@/components/home/left/LeftMenu";
 import RightMenu from "@/components/home/right/RightMenu";
 
 export const metadata: Metadata = {
-  title: "SD | Social || Home",
+  title: "SDSOCIAL | Home",
   description: "Profile page",
 };
 
@@ -18,7 +18,7 @@ const Homepage = () => {
 
       {/* CENTER */}
       <div className="w-full lg:w-[70%] xl:w-[50%]">
-        <CenterMenu />
+        <CenterMenu location="home" />
       </div>
 
       {/* RIGHT */}
