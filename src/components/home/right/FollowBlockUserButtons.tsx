@@ -4,6 +4,7 @@ import { switchFollow, switchBlock } from "@/lib/actions";
 import { useOptimistic, useState } from "react";
 import { useRouter } from "next/navigation";
 import BlockModel from "@/components/models/BlockModel";
+import { toast } from "react-toastify";
 
 const FollowBlockUserButtons = ({
   userId,
@@ -18,16 +19,19 @@ const FollowBlockUserButtons = ({
   isFollowing: boolean;
   isFollowRequestSent: boolean;
 }) => {
+  // get router from next/navigation
   const router = useRouter();
+
+  // define states
   const [blockClicked, setBlockClicked] = useState(false);
   const [blockedLoading, setBlockedLoading] = useState(false);
-
   const [userState, setUserState] = useState({
     isBlocked: isBlocked,
     isFollowing: isFollowing,
     isFollowRequestSent: isFollowRequestSent,
   });
 
+  // Follow user function
   const follow = async () => {
     switchOptimisticFollow("");
     try {
@@ -38,11 +42,14 @@ const FollowBlockUserButtons = ({
         isFollowRequestSent:
           !prev.isFollowing && !prev.isFollowRequestSent ? true : false,
       }));
+      toast.success("Followed");
     } catch (err) {
+      toast.error("Failed to follow, try again later.");
       console.log(err);
     }
   };
 
+  // Optimistic UI for follow
   const [optimisticFollow, switchOptimisticFollow] = useOptimistic(
     userState,
     (prev) => ({
@@ -52,25 +59,6 @@ const FollowBlockUserButtons = ({
         !prev.isFollowing && !prev.isFollowRequestSent ? true : false,
     })
   );
-
-  const block = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setBlockedLoading(true);
-    try {
-      const res = await switchBlock(userId, currentUserId);
-      setUserState((prev) => ({
-        ...prev,
-        isBlocked: !prev.isBlocked,
-      }));
-      setBlockedLoading(false);
-      setBlockClicked(false);
-      if (res == "blocked") {
-        router.push("/");
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   return (
     <div className="w-full flex items-center flex-col gap-2">

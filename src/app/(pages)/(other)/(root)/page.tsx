@@ -1,6 +1,12 @@
+import { Metadata } from "next";
 import CenterMenu from "@/components/home/center/CenterMenu";
 import LeftMenu from "@/components/home/left/LeftMenu";
 import RightMenu from "@/components/home/right/RightMenu";
+
+export const metadata: Metadata = {
+  title: "SD | Social || Home",
+  description: "Profile page",
+};
 
 const Homepage = () => {
   return (

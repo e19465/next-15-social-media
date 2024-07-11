@@ -1,5 +1,6 @@
 import { switchBlock } from "@/lib/actions";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 interface BlockModelProps {
   setBlockClicked: React.Dispatch<React.SetStateAction<boolean>>;
@@ -24,7 +25,10 @@ const BlockModel: React.FC<BlockModelProps> = ({
   userId,
   currentUserId,
 }) => {
+  // get router from next/navigation
   const router = useRouter();
+
+  // Block user function (action)
   const block = async (e: React.FormEvent) => {
     e.preventDefault();
     setBlockedLoading(true);
@@ -38,8 +42,11 @@ const BlockModel: React.FC<BlockModelProps> = ({
       setBlockClicked(false);
       if (res == "blocked") {
         router.push("/");
+        toast.success("Blocked");
       }
     } catch (err) {
+      toast.error("Failed to block, try again later.");
+      setBlockedLoading(false);
       console.log(err);
     }
   };

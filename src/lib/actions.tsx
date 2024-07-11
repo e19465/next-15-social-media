@@ -211,3 +211,48 @@ export const rejectFollowRequest = async (
     throw new Error("Something went wrong. Please try again later.");
   }
 };
+
+//! Function to update user cover photo
+export const updateUserCoverPhoto = async (
+  userId: string,
+  coverPhoto: string
+) => {
+  if (!userId)
+    throw new Error("You must be logged in to update your cover photo.");
+
+  try {
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        cover: coverPhoto,
+      },
+    });
+    return "updated";
+  } catch (err) {
+    console.log(err);
+    throw new Error("Something went wrong. Please try again later.");
+  }
+};
+
+//! Function to update user information
+export const updateUserInformation = async (userId: string, data: any) => {
+  if (!userId)
+    throw new Error("You must be logged in to update your information.");
+
+  try {
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        ...data,
+      },
+    });
+    return "updated";
+  } catch (err) {
+    console.log(err);
+    throw new Error("Something went wrong. Please try again later.");
+  }
+};

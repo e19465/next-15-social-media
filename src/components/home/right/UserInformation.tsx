@@ -3,6 +3,8 @@ import Image from "next/image";
 import FollowBlockUserButtons from "./FollowBlockUserButtons";
 import { prisma } from "@/lib/client";
 import { auth } from "@clerk/nextjs/server";
+import UpdateUserButton from "./UpdateUserButton";
+import Link from "next/link";
 
 const UserInformation = async ({ userId }: { userId?: string }) => {
   if (!userId) return null;
@@ -27,6 +29,15 @@ const UserInformation = async ({ userId }: { userId?: string }) => {
 
   const { userId: currentUserId } = auth();
   if (!currentUserId) return null;
+
+  const currentUser = await prisma.user.findFirst({
+    where: {
+      id: currentUserId,
+    },
+  });
+
+  if (!currentUser) return null;
+
   if (currentUserId) {
     //! Check if the user is blocked
     const blockResponse = await prisma.blockRequest.findFirst({
@@ -63,9 +74,13 @@ const UserInformation = async ({ userId }: { userId?: string }) => {
       {/* TOP */}
       <div className="flex items-center justify-between">
         <span className="font-medium text-gray-500">Details</span>
-        <ProgressLink className="text-blue-500 hover:underline" href="#">
-          See All
-        </ProgressLink>
+        {userId === currentUserId && currentUser ? (
+          <UpdateUserButton currentUser={currentUser} />
+        ) : (
+          <ProgressLink className="text-blue-500 hover:underline" href="#">
+            See All
+          </ProgressLink>
+        )}
       </div>
 
       {/* NAME AND USERNAME */}
@@ -97,7 +112,7 @@ const UserInformation = async ({ userId }: { userId?: string }) => {
             />
             <span className="text-sm text-gray-400 w-[70%]">Living in</span>
           </div>
-          <span className="text-sm font-bold text-gray-600">
+          <span className="text-sm font-bold text-gray-600 w-[calc(100%-30%)] text-left">
             {user.city || "Not Available"}
           </span>
         </div>
@@ -111,7 +126,7 @@ const UserInformation = async ({ userId }: { userId?: string }) => {
             />
             <span className="text-sm text-gray-400 w-[70%]">Went to</span>
           </div>
-          <span className="text-sm font-bold text-gray-600">
+          <span className="text-sm font-bold text-gray-600 w-[calc(100%-30%)] text-left">
             {user.school || "Not Available"}
           </span>
         </div>
@@ -120,7 +135,7 @@ const UserInformation = async ({ userId }: { userId?: string }) => {
             <Image src="/work.png" alt="Working Place" width={20} height={20} />
             <span className="text-sm text-gray-400 w-[70%]">Works at</span>
           </div>
-          <span className="text-sm font-bold text-gray-600">
+          <span className="text-sm font-bold text-gray-600 w-[calc(100%-30%)] text-left">
             {user.work || "Not Available"}
           </span>
         </div>
@@ -132,9 +147,13 @@ const UserInformation = async ({ userId }: { userId?: string }) => {
         {user.website && (
           <div className="flex items-center gap-2">
             <Image src="/link.png" alt="Profile Link" width={20} height={20} />
-            <ProgressLink className="text-blue-500 hover:underline" href="#">
-              {user.website}
-            </ProgressLink>
+            <Link
+              className="text-blue-500 hover:underline"
+              href={user.website}
+              target="_blank"
+            >
+              website
+            </Link>
           </div>
         )}
 
