@@ -1,15 +1,22 @@
 import Image from "next/image";
 import SingleComment from "./SingleComment";
-import { Post, User } from "@prisma/client";
 import { prisma } from "@/lib/client";
 
 const PostComments = async ({ postId }: { postId: number }) => {
+  // get all the comments for the post with replies and likes
   const comments = await prisma.comment.findMany({
     where: {
       postId: postId,
     },
     include: {
       user: true,
+      likes: true,
+      replies: {
+        include: {
+          user: true,
+          likes: true,
+        },
+      },
       _count: {
         select: {
           likes: true,
@@ -18,8 +25,6 @@ const PostComments = async ({ postId }: { postId: number }) => {
     },
   });
   if (!comments) return null;
-
-  console.log(comments);
 
   return (
     <div className="w-full flex flex-col items-center gap-4">

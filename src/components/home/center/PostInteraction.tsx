@@ -34,7 +34,6 @@ const PostInteraction = ({ post }: { post: PostInteractionProps }) => {
     isLiked: isLiked,
     likeCount: likeCount,
   });
-  const [isUpdatingLike, setIsUpdatingLike] = useState<boolean>(false);
 
   // optimistic UI state
   const [optimisticLikeAndCountState, setOptimisticLikeAndCountState] =
@@ -48,32 +47,32 @@ const PostInteraction = ({ post }: { post: PostInteractionProps }) => {
 
   // handle like / unlike post
   const handleLikes = async () => {
-    startTransition(() => {
-      if (!isUpdatingLike) {
-        setOptimisticLikeAndCountState("");
-      }
-    });
+    // update the optimistic state for better user experience
+    setOptimisticLikeAndCountState("");
 
-    // update like starting
-    setIsUpdatingLike(true);
+    // actual like / unlike post in the database
     try {
       const res = await switchLike(post.id, ownerId);
-      setIsUpdatingLike(false);
       if (res == "liked") {
-        setLikeAndLikeCount({
-          isLiked: true,
-          likeCount: likeCount + 1,
+        setLikeAndLikeCount((prev: any) => {
+          return {
+            ...prev,
+            isLiked: true,
+            likeCount: prev.likeCount + 1,
+          };
         });
       } else if (res == "unliked") {
-        setLikeAndLikeCount({
-          isLiked: false,
-          likeCount: likeCount - 1,
+        setLikeAndLikeCount((prev: any) => {
+          return {
+            ...prev,
+            isLiked: false,
+            likeCount: prev.likeCount - 1,
+          };
         });
       }
     } catch (err) {
       toast.error("Something went wrong. Please try again later.");
       console.log(err);
-      setIsUpdatingLike(false);
       return;
     }
   };
@@ -83,10 +82,7 @@ const PostInteraction = ({ post }: { post: PostInteractionProps }) => {
       {/* LEFT SIDE */}
       <div className="flex gap-4">
         {/* LIKE */}
-        <form
-          action={handleLikes}
-          className="flex items-center gap-2 bg-slate-100 p-2 rounded-xl"
-        >
+        <div className="flex items-center gap-2 bg-slate-100 p-2 rounded-xl">
           <Image
             src={optimisticLikeAndCountState.isLiked ? LIKED_IMAGE : LIKE_IMAGE}
             alt="like the post"
@@ -101,7 +97,7 @@ const PostInteraction = ({ post }: { post: PostInteractionProps }) => {
             {optimisticLikeAndCountState.likeCount}
           </span>
           <span className="text-gray-400 hidden md:inline">Likes</span>
-        </form>
+        </div>
 
         {/* COMMENT */}
         <div className="flex items-center gap-2 bg-slate-100 p-2 rounded-xl">

@@ -35,6 +35,7 @@ model User {
   blocksSent            BlockRequest[]  @relation("BlocksSent")
   blocksRecieved        BlockRequest[]  @relation("BlocksRecieved")
   stories               Story[]
+  replies               ReplyComment[]
   createdAt             DateTime        @default(now())
   updatedAt             DateTime        @updatedAt
 }
@@ -59,6 +60,8 @@ model Like {
   postId    Int?
   comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
   commentId Int?
+  reply     ReplyComment? @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  replyId   Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -71,8 +74,22 @@ model Comment {
   postId    Int
   text      String?
   likes     Like[]
+  replies   ReplyComment[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model ReplyComment {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId Int
+  text      String?
+  likes     Like[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
 }
 
 model Follower {

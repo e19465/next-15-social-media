@@ -294,3 +294,68 @@ export const switchLike = async (postId: number, currentUserId: string) => {
     throw new Error("Something went wrong. Please try again later.");
   }
 };
+
+//! Function to like / dislike a comment
+export const switchCommentLikes = async (
+  commentId: number,
+  currentUserId: string
+) => {
+  if (!currentUserId)
+    throw new Error("You must be logged in to like comments.");
+  if (!commentId) throw new Error("You must provide a comment to like.");
+
+  try {
+    //! get the existing comment
+    const existingComment = await prisma.comment.findUnique({
+      where: {
+        id: commentId,
+      },
+      include: {
+        likes: {
+          where: {
+            userId: currentUserId,
+          },
+        },
+      },
+    });
+
+    const isUserLiked = existingComment?.likes.length! > 0;
+
+    //! If the user has already liked the comment, unlike it
+    if (isUserLiked) {
+      const newLikesArray = existingComment?.likes.filter(
+        (like) => like.userId !== currentUserId
+      );
+      await prisma.comment.update({
+        where: {
+          id: commentId,
+        },
+        data: {
+          likes: {
+            set: newLikesArray,
+          },
+        },
+      });
+      return "disliked";
+    } else {
+      //! If the user has not liked the comment, like it
+      await prisma.comment.update({
+        where: {
+          id: commentId,
+        },
+        data: {
+          likes: {
+            create: {
+              userId: currentUserId,
+            },
+          },
+        },
+      });
+
+      return "liked";
+    }
+  } catch (err) {
+    console.log(err);
+    throw new Error("Something went wrong. Please try again later.");
+  }
+};
