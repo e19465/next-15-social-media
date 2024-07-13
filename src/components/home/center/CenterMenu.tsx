@@ -15,6 +15,7 @@ const CenterMenu = ({
       {!userId && <Stories />}
       {!userId && <AddNewPost />}
       {userId && <CenterProileCard userId={userId} />}
+      {userId && <AddNewPost />}
       <PostFeed location={location} />
     </div>
   );

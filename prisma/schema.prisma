@@ -47,6 +47,7 @@ model Post {
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
   likes       Like[]
+  replies     ReplyComment[]
   comments    Comment[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -84,6 +85,8 @@ model ReplyComment {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    Int
   commentId Int
   text      String?
   likes     Like[]

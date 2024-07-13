@@ -2,7 +2,11 @@
 import { Like, ReplyComment, User } from "@prisma/client";
 import Image from "next/image";
 import SingleReply from "./SingleReply";
-import { useUser } from "@clerk/nextjs";
+import { useAuth, useUser } from "@clerk/nextjs";
+import { useState } from "react";
+import { replyToComment } from "@/lib/actions";
+import { toast } from "react-toastify";
+import Spinner from "@/components/Spinner";
 
 type ReplyCommentsProps = ReplyComment & {
   user: User;
@@ -10,10 +14,18 @@ type ReplyCommentsProps = ReplyComment & {
 };
 
 const ReplyComments = ({
+  postId,
+  currentUser,
+  commentId,
   replies,
   isReplyComponentOpen,
+  postOwnerId,
   setIsReplyComponentOpen,
 }: {
+  postOwnerId: string;
+  postId: number;
+  currentUser: User;
+  commentId: number;
   replies: ReplyCommentsProps[];
   isReplyComponentOpen: boolean;
   setIsReplyComponentOpen: (value: boolean) => void;
@@ -22,15 +34,53 @@ const ReplyComments = ({
   const clerkUser = useUser();
   if (!clerkUser) return null;
 
+  // get the current user ID
+  const { userId: currentUserId } = useAuth();
+  if (!currentUserId) return null;
+
   // define the user avatar url
   const userAvatarURL = clerkUser.user?.imageUrl || "/noAvatar.png";
+
+  // define states
+  const [replyComment, setReplyComment] = useState<string>("");
+  const [repliesState, setRepliesState] =
+    useState<ReplyCommentsProps[]>(replies);
+  const [isReplyLoading, setIsReplyLoading] = useState<boolean>(false);
+
+  // handle the close of the model
+  const handleClose = () => {
+    setIsReplyComponentOpen(false);
+  };
+
+  // form action to handle reply
+  const handleReply = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsReplyLoading(true);
+    try {
+      const res = await replyToComment(
+        postId,
+        commentId,
+        currentUserId,
+        replyComment
+      );
+      if (res) {
+        setRepliesState((prev) => [...prev, res]);
+      }
+      setReplyComment("");
+      setIsReplyLoading(false);
+    } catch (err) {
+      setIsReplyLoading(false);
+      toast.error("Failed to add reply comment");
+      console.error(err);
+    }
+  };
 
   return (
     <>
       {isReplyComponentOpen && (
         <div
           className="absolute w-screen h-screen top-0 left-0 bg-black bg-opacity-35 flex items-center justify-center z-50"
-          onClick={() => setIsReplyComponentOpen(false)}
+          onClick={handleClose}
         >
           <div
             className="shadow-lg w-full md:w-1/2 xl:w-1/3 z-[100] h-auto max-h-[90%] overflow-auto scrollbar-hide rounded-lg"
@@ -43,7 +93,7 @@ const ReplyComments = ({
                   type="button"
                   title="close form"
                   className="flex items-center justify-center cursor-pointer transition-transform duration-300 transform hover:scale-125 p-[2px] bg-blue-500 rounded-full"
-                  onClick={() => setIsReplyComponentOpen(false)}
+                  onClick={handleClose}
                 >
                   <Image
                     src="/reject.png"
@@ -57,9 +107,14 @@ const ReplyComments = ({
 
               {/* Reply Comments Section */}
               <div className="w-full flex flex-col gap-4">
-                {replies.length !== 0 &&
-                  replies.map((singleReply) => (
-                    <SingleReply reply={singleReply} key={singleReply.id} />
+                {repliesState.length !== 0 &&
+                  repliesState.map((singleReply) => (
+                    <SingleReply
+                      setStateOfDocs={setRepliesState}
+                      reply={singleReply}
+                      key={singleReply.id}
+                      postOwnerId={postOwnerId}
+                    />
                   ))}
               </div>
 
@@ -77,32 +132,37 @@ const ReplyComments = ({
                   {/* POST */}
                   <div className="flex-1">
                     {/* TEXT INPUT */}
-                    <form action="" className="flex gap-4">
+                    <form onSubmit={handleReply} className="flex gap-4">
                       <textarea
                         name="add-post-text-area"
                         id="add-post-text-area"
                         title="add-post-text-area"
                         placeholder="What's on your mind?"
                         className="w-full h-20 p-2 bg-slate-100 rounded-lg resize-none flex-1 outline-blue-500"
+                        value={replyComment}
+                        onChange={(e) => setReplyComment(e.target.value)}
                       />
                       <div className="flex items-center gap-2 self-end">
-                        <Image
-                          src="/emoji.png"
-                          alt="select an emoji"
-                          title="Select an emoji"
-                          width={24}
-                          height={24}
-                          className="w-5 h-5 object-cover rounded-full cursor-pointer"
-                        />
-                        <button type="submit" title="add post submit button">
-                          <Image
-                            src="/share.png"
-                            alt="add new post button"
-                            title="Add new post button"
-                            width={24}
-                            height={24}
-                            className="w-5 h-5 object-cover cursor-pointer"
-                          />
+                        <button
+                          type="submit"
+                          title="add post submit button"
+                          disabled={isReplyLoading}
+                          className={`${
+                            isReplyLoading && "cursor-not-allowed"
+                          }`}
+                        >
+                          {isReplyLoading ? (
+                            <p>...</p>
+                          ) : (
+                            <Image
+                              src="/share.png"
+                              alt="add new reply comment button"
+                              title="Add new reply comment button"
+                              width={24}
+                              height={24}
+                              className="w-5 h-5 object-cover cursor-pointer"
+                            />
+                          )}
                         </button>
                       </div>
                     </form>

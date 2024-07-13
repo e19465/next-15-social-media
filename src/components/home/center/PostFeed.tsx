@@ -15,18 +15,18 @@ const PostFeed: React.FC<LocationProps> = ({ location }) => {
       if (!userId) return null;
       const usersImFollowing = await prisma.follower.findMany({
         where: {
-          followerId: userId,
+          followingId: userId,
         },
         select: {
-          followingId: true,
+          followerId: true,
         },
       });
 
       const userIdsOfUsersImFollowing = usersImFollowing.map(
-        (user) => user.followingId
+        (user) => user.followerId
       );
 
-      const follingsPosts = await prisma.post.findMany({
+      const followingsPosts = await prisma.post.findMany({
         where: {
           userId: {
             in: userIdsOfUsersImFollowing,
@@ -52,8 +52,8 @@ const PostFeed: React.FC<LocationProps> = ({ location }) => {
 
       return (
         <>
-          {follingsPosts?.length !== 0 ? (
-            follingsPosts.map((post) => (
+          {followingsPosts?.length !== 0 ? (
+            followingsPosts.map((post) => (
               <SinglePost post={post} key={post.id} />
             ))
           ) : (

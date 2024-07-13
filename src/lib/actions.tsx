@@ -1,4 +1,5 @@
 "use server";
+import { PrismaClient } from "@prisma/client";
 import { prisma } from "./client";
 
 //! Function to follow / unfollow / send follow request / remove follow request
@@ -354,6 +355,172 @@ export const switchCommentLikes = async (
 
       return "liked";
     }
+  } catch (err) {
+    console.log(err);
+    throw new Error("Something went wrong. Please try again later.");
+  }
+};
+
+//! Function to reply to a comment
+export const replyToComment = async (
+  postId: number,
+  commentId: number,
+  currentUserId: string,
+  reply: string
+) => {
+  if (!currentUserId)
+    throw new Error("You must be logged in to reply to comments.");
+  if (!commentId) throw new Error("You must provide a comment to reply.");
+  if (!reply) throw new Error("You must provide a reply.");
+
+  try {
+    //! Create a new reply
+    const replyComment = await prisma.replyComment.create({
+      data: {
+        commentId: commentId,
+        userId: currentUserId,
+        postId: postId,
+        text: reply,
+      },
+      include: {
+        user: true,
+        likes: true,
+      },
+    });
+
+    const res = replyComment;
+
+    return replyComment;
+  } catch (err) {
+    console.log(err);
+    throw new Error("Something went wrong. Please try again later.");
+  }
+};
+
+//! Function to like / dislike a reply
+export const switchReplyLikes = async (
+  replyId: number,
+  currentUserId: string
+) => {
+  if (!currentUserId) throw new Error("You must be logged in to like replies.");
+  if (!replyId) throw new Error("You must provide a reply to like.");
+  console.log("entered");
+
+  try {
+    //! get the existing reply
+    const existingReply = await prisma.replyComment.findUnique({
+      where: {
+        id: replyId,
+      },
+      include: {
+        likes: {
+          where: {
+            userId: currentUserId,
+          },
+        },
+      },
+    });
+
+    const isUserLiked = existingReply?.likes.length! > 0;
+
+    //! If the user has already liked the reply, unlike it
+    if (isUserLiked) {
+      const newLikesArray = existingReply?.likes.filter(
+        (like) => like.userId !== currentUserId
+      );
+      await prisma.replyComment.update({
+        where: {
+          id: replyId,
+        },
+        data: {
+          likes: {
+            set: newLikesArray,
+          },
+        },
+      });
+      return "disliked";
+    } else {
+      //! If the user has not liked the reply, like it
+      await prisma.replyComment.update({
+        where: {
+          id: replyId,
+        },
+        data: {
+          likes: {
+            create: {
+              userId: currentUserId,
+            },
+          },
+        },
+      });
+
+      return "liked";
+    }
+  } catch (err) {
+    console.log(err);
+    throw new Error("Something went wrong. Please try again later.");
+  }
+};
+
+//! delete some document
+export const deleteDoc = async (
+  docId: number,
+  category: keyof PrismaClient
+) => {
+  if (!docId) throw new Error("You must provide a document to delete.");
+  if (!category) throw new Error("You must provide a category to delete.");
+
+  try {
+    //! delete the document
+    const res = await (prisma[category] as any).delete({
+      where: {
+        id: docId,
+      },
+    });
+    if (!res) throw new Error("Document not found.");
+    return "deleted";
+  } catch (err) {
+    console.log(err);
+    throw new Error("Something went wrong. Please try again later.");
+  }
+};
+
+//! add mew comment
+export const addComment = async (
+  postId: number,
+  currentUserId: string,
+  comment: string
+) => {
+  if (!currentUserId) throw new Error("You must be logged in to comment.");
+  if (!postId) throw new Error("You must provide a post to comment.");
+  if (!comment) throw new Error("You must provide a comment.");
+
+  try {
+    //! Create a new comment
+    const newComment = await prisma.comment.create({
+      data: {
+        postId: postId,
+        userId: currentUserId,
+        text: comment,
+      },
+      include: {
+        user: true,
+        likes: true,
+        replies: {
+          include: {
+            user: true,
+            likes: true,
+          },
+        },
+        _count: {
+          select: {
+            likes: true,
+          },
+        },
+      },
+    });
+
+    return newComment;
   } catch (err) {
     console.log(err);
     throw new Error("Something went wrong. Please try again later.");

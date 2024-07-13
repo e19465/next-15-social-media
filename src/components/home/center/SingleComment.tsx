@@ -8,6 +8,7 @@ import ReplyComments from "./ReplyComments";
 //! image imports
 import LIKED_IMAGE from "../../../../public/liked.png";
 import LIKE_IMAGE from "../../../../public/like.png";
+import DeleteModel from "@/components/models/DeleteModel";
 
 //! types
 type ReplyCommentProps = ReplyComment & {
@@ -25,14 +26,26 @@ type SingleCommentProps = Comment & {
 };
 
 //! SingleComment component
-const SingleComment = ({ comment }: { comment: SingleCommentProps }) => {
-  // find the current user liked to the comment or not
+const SingleComment = ({
+  postId,
+  comment,
+  currentUser,
+  postOwnerId,
+  setCommentsList,
+}: {
+  postId: number;
+  comment: SingleCommentProps;
+  currentUser: User;
+  postOwnerId: string;
+  setCommentsList: React.Dispatch<React.SetStateAction<SingleCommentProps[]>>;
+}) => {
+  // variables
   const userId = comment.user.id;
   const usersLike = comment.likes.find((like) => like.userId === userId);
-
-  // check if the user liked the comment or not and the like count
   const isUserLiked = usersLike ? true : false;
   const likeCount = comment._count.likes;
+  const isAbleToDelete =
+    userId === currentUser.id || postOwnerId === currentUser.id;
 
   // states
   const [currentUserLikedAndCount, setCurrentUserLikedAndCount] = useState({
@@ -41,6 +54,8 @@ const SingleComment = ({ comment }: { comment: SingleCommentProps }) => {
   });
   const [isReplyComponentOpen, setIsReplyComponentOpen] =
     useState<boolean>(false);
+  const [deleteClicked, setDeleteClicked] = useState<boolean>(false);
+  const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
 
   // optimistic UI state
   const [optimisticLikeAndCountState, setOptimisticLikeAndCountState] =
@@ -122,27 +137,42 @@ const SingleComment = ({ comment }: { comment: SingleCommentProps }) => {
             className="text-xs text-gray-500 cursor-pointer bg-transparent outline-none border-none"
             onClick={() => setIsReplyComponentOpen(true)}
           >
-            Reply
+            {`Reply (${comment.replies.length})`}
           </button>
+          {isAbleToDelete && (
+            <button
+              type="button"
+              title="delete the reply comment"
+              onClick={() => setDeleteClicked(true)}
+            >
+              🗑️
+            </button>
+          )}
         </div>
       </div>
 
-      {/* MORE OPTIONS EMOJI */}
-      <div className="cursor-pointer p-2 hover:bg-gray-200 rounded-full">
-        <Image
-          src="/more.png"
-          alt="comment options"
-          title="Comment options"
-          width={16}
-          height={16}
-          className="object-contain"
-        />
-      </div>
+      {/* REPLY COMMENTS */}
       <ReplyComments
+        postOwnerId={postOwnerId}
+        postId={postId}
+        currentUser={currentUser}
+        commentId={comment.id}
         replies={comment.replies}
         isReplyComponentOpen={isReplyComponentOpen}
         setIsReplyComponentOpen={setIsReplyComponentOpen}
       />
+
+      {/* DELET MODEL */}
+      {deleteClicked && (
+        <DeleteModel
+          setDeleteClicked={setDeleteClicked}
+          deleteLoading={deleteLoading}
+          setDeleteLoading={setDeleteLoading}
+          docId={comment.id}
+          category="comment"
+          setStateOfDocs={setCommentsList}
+        />
+      )}
     </div>
   );
 };

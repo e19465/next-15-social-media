@@ -1,8 +1,30 @@
 import Image from "next/image";
 import SingleComment from "./SingleComment";
 import { prisma } from "@/lib/client";
+import { auth } from "@clerk/nextjs/server";
+import CommentsList from "./CommentsList";
 
-const PostComments = async ({ postId }: { postId: number }) => {
+const PostComments = async ({
+  postId,
+  postOwnerId,
+}: {
+  postId: number;
+  postOwnerId: string;
+}) => {
+  // get the current user ID
+  const { userId } = auth();
+  if (!userId) return null;
+
+  // fetch the current user
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  // if the user is not found return null
+  if (!user) return null;
+
   // get all the comments for the post with replies and likes
   const comments = await prisma.comment.findMany({
     where: {
@@ -23,53 +45,20 @@ const PostComments = async ({ postId }: { postId: number }) => {
         },
       },
     },
+    orderBy: {
+      createdAt: "asc",
+    },
   });
   if (!comments) return null;
 
   return (
     <div className="w-full flex flex-col items-center gap-4">
-      {/* WRITE A COMMENT */}
-      <div className="w-full flex items-center gap-4">
-        <Image
-          src="https://images.pexels.com/photos/775358/pexels-photo-775358.jpeg?auto=compress&cs=tinysrgb&w=600"
-          alt="post owner profile photo"
-          width={40}
-          height={40}
-          className="w-10 h-10 object-cover rounded-full"
-        />
-        {/* TEXT AREA AND BUTTONS */}
-        <div className="flex gap-2 flex-1">
-          <textarea
-            placeholder="Write a comment..."
-            className="w-full p-2 bg-slate-100 rounded-xl flex-1 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 scrollbar-hide text-sm"
-          />
-          <div className="flex gap-2 self-end p-2">
-            <Image
-              src="/emoji.png"
-              alt="select an emoji"
-              title="Select an emoji"
-              width={24}
-              height={24}
-              className="w-5 h-5 object-cover cursor-pointer"
-            />
-            <Image
-              src="/share.png"
-              alt="post the comment"
-              title="Post the comment"
-              width={24}
-              height={24}
-              className="w-5 h-5 object-cover cursor-pointer"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* AVAILABLE COMMENTS */}
-      <div className="w-full flex flex-col gap-4 items-center">
-        {comments.map((comment) => (
-          <SingleComment key={comment.id} comment={comment} />
-        ))}
-      </div>
+      <CommentsList
+        comments={comments}
+        postOwnerId={postOwnerId}
+        postId={postId}
+        currentUser={user}
+      />
     </div>
   );
 };

@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
-import { useOptimistic, useState, startTransition } from "react";
-import { Post, User } from "@prisma/client";
+import { useOptimistic, useState } from "react";
+import { Like, Post, User, Comment, ReplyComment } from "@prisma/client";
 import { switchLike } from "@/lib/actions";
 import { toast } from "react-toastify";
 
@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import LIKED_IMAGE from "../../../../public/liked.png";
 import LIKE_IMAGE from "../../../../public/like.png";
 
+//! define types for the props
 type PostInteractionProps = Post & {
   user: User;
   likes: {
@@ -19,7 +20,15 @@ type PostInteractionProps = Post & {
   };
 };
 
-const PostInteraction = ({ post }: { post: PostInteractionProps }) => {
+const PostInteraction = ({
+  currentUser,
+  post,
+  replyCommentsLength,
+}: {
+  currentUser: User;
+  post: PostInteractionProps;
+  replyCommentsLength: number;
+}) => {
   // variables
   const likesArray = post?.likes;
   const ownerId = post?.userId;
@@ -110,7 +119,9 @@ const PostInteraction = ({ post }: { post: PostInteractionProps }) => {
             className="object-contain cursor-pointer"
           />
           <span className="text-gray-300">|</span>
-          <span className="text-gray-500">{commentsCount}</span>
+          <span className="text-gray-500">
+            {commentsCount + replyCommentsLength}
+          </span>
           <span className="text-gray-400 hidden md:inline">Comments</span>
         </div>
       </div>
