@@ -8,7 +8,7 @@ import { useAuth } from "@clerk/nextjs";
 
 // image imports
 import FRIENDS_IMAGE from "../../../public/friends.png";
-import SETTINGS_IMAGE from "../../../public/settings.png";
+import FOLLOW_REQUEST_IMAGE from "../../../public/lists.png";
 import FOLLOWING_IMAGE from "../../../public/groups.png";
 import PROFILE_IMAGE from "../../../public/profile.png";
 
@@ -40,6 +40,12 @@ const NonMobileMenu = () => {
     },
     {
       id: 3,
+      name: "Requests",
+      path: "/follow_requests",
+      img: FOLLOW_REQUEST_IMAGE,
+    },
+    {
+      id: 4,
       name: "Profile",
       path: `/profile/${userId}`,
       img: PROFILE_IMAGE,

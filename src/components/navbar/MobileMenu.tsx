@@ -35,6 +35,11 @@ const MobileMenu = () => {
       name: "Followers",
       path: "/followers",
     },
+    {
+      id: 5,
+      name: "Requests",
+      path: "/follow_requests",
+    },
   ];
 
   useEffect(() => {
