@@ -6,7 +6,13 @@ import UserInformation from "./UserInformation";
 import UserMedia from "./UserMedia";
 import Spinner from "@/components/Spinner";
 
-const RightMenu = ({ userId }: { userId?: string }) => {
+const RightMenu = ({
+  userId,
+  location,
+}: {
+  userId?: string;
+  location?: string;
+}) => {
   return (
     <div className="w-full p-2 h-calc-100vh-minus-80 overflow-auto flex flex-col gap-6 scrollbar-hide">
       {userId && (
@@ -19,7 +25,7 @@ const RightMenu = ({ userId }: { userId?: string }) => {
           </Suspense>
         </>
       )}
-      <FriendRequests />
+      {location === "home" && <FriendRequests />}
       <BirthDays />
       <Ads size="md" />
     </div>

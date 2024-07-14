@@ -1,5 +1,5 @@
 "use client";
-import PostInteraction from "./PostInteraction";
+import PostInteraction from "../post_related/PostInteraction";
 import PostComments from "./PostComments";
 import { Comment, Like, Post, ReplyComment, User } from "@prisma/client";
 import { useOptimistic, useState } from "react";

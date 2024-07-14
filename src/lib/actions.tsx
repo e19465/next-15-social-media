@@ -12,8 +12,8 @@ export const switchFollow = async (userId: string, currentUserId: string) => {
     //! Check if the user is already following the user
     const existingFollow = await prisma.follower.findFirst({
       where: {
-        followerId: currentUserId,
-        followingId: userId,
+        followerId: userId,
+        followingId: currentUserId,
       },
     });
 
@@ -536,6 +536,49 @@ export const addComment = async (
     });
 
     return newComment;
+  } catch (err) {
+    console.log(err);
+    throw new Error("Something went wrong. Please try again later.");
+  }
+};
+
+//! create new post
+export const createNewPost = async (
+  currentUserId: string,
+  description: string,
+  img: string
+) => {
+  if (!currentUserId) throw new Error("You must be logged in to post.");
+
+  try {
+    //! Create a new post
+    await prisma.post.create({
+      data: {
+        userId: currentUserId,
+        description: description,
+        img: img,
+      },
+    });
+    return "created";
+  } catch (err) {
+    console.log(err);
+    throw new Error("Something went wrong. Please try again later.");
+  }
+};
+
+//! delete post
+export const ownerDeletePost = async (postId: number) => {
+  if (!postId) throw new Error("You must provide a post to delete.");
+
+  try {
+    //! delete the post
+    const res = await prisma.post.delete({
+      where: {
+        id: postId,
+      },
+    });
+    if (!res) throw new Error("Post not found.");
+    return "deleted";
   } catch (err) {
     console.log(err);
     throw new Error("Something went wrong. Please try again later.");

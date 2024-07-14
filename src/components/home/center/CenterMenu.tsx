@@ -1,7 +1,7 @@
-import AddNewPost from "./AddNewPost";
+import AddNewPost from "./create_post/AddNewPost";
 import CenterProileCard from "./CenterProileCard";
 import PostFeed from "./PostFeed";
-import Stories from "./Stories";
+import Stories from "./stories/Stories";
 
 const CenterMenu = ({
   userId,

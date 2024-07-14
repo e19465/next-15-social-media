@@ -5,8 +5,8 @@ import { useAuth } from "@clerk/nextjs";
 import { switchReplyLikes } from "@/lib/actions";
 
 //! image imports
-import LIKED_IMAGE from "../../../../public/liked.png";
-import LIKE_IMAGE from "../../../../public/like.png";
+import LIKED_IMAGE from "../../../../../public/liked.png";
+import LIKE_IMAGE from "../../../../../public/like.png";
 import CoomentReplyDeleteModel from "@/components/models/CoomentReplyDeleteModel";
 
 type ReplyCommentProps = ReplyComment & {

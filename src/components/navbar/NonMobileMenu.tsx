@@ -9,7 +9,7 @@ import { useAuth } from "@clerk/nextjs";
 // image imports
 import FRIENDS_IMAGE from "../../../public/friends.png";
 import SETTINGS_IMAGE from "../../../public/settings.png";
-import STORIES_IMAGE from "../../../public/stories.png";
+import FOLLOWING_IMAGE from "../../../public/groups.png";
 import PROFILE_IMAGE from "../../../public/profile.png";
 
 //! imports end >>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
@@ -28,24 +28,18 @@ const NonMobileMenu = () => {
   const menu: MenuItem[] = [
     {
       id: 1,
-      name: "Stories",
-      path: "/stories",
-      img: STORIES_IMAGE,
+      name: "Following",
+      path: "/following",
+      img: FOLLOWING_IMAGE,
     },
     {
       id: 2,
-      name: "Friends",
-      path: "/friends",
+      name: "Followers",
+      path: "/followers",
       img: FRIENDS_IMAGE,
     },
     {
       id: 3,
-      name: "Settings",
-      path: "/settings",
-      img: SETTINGS_IMAGE,
-    },
-    {
-      id: 4,
       name: "Profile",
       path: `/profile/${userId}`,
       img: PROFILE_IMAGE,

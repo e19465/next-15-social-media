@@ -1,4 +1,4 @@
-import SinglePost from "./SinglePost";
+import SinglePost from "./post_related/SinglePost";
 import { prisma } from "@/lib/client";
 import { auth } from "@clerk/nextjs/server";
 

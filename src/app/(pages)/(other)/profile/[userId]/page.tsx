@@ -4,7 +4,7 @@ import LeftMenu from "@/components/home/left/LeftMenu";
 import RightMenu from "@/components/home/right/RightMenu";
 
 export const metadata: Metadata = {
-  title: "SD | Social || Profile",
+  title: "SDSOCIAL | Profile",
   description: "Profile page",
 };
 

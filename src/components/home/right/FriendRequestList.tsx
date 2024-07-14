@@ -3,6 +3,7 @@ import { FollowRequest, User } from "@prisma/client";
 import Image from "next/image";
 import { acceptFollowRequest, rejectFollowRequest } from "@/lib/actions";
 import { useOptimistic, useState } from "react";
+import { ProgressLink } from "@/components/nprogress/NProgressHandler";
 
 type RequestWithUser = FollowRequest & {
   sender: User;
@@ -50,13 +51,15 @@ const FriendRequestList = ({ requests }: { requests: RequestWithUser[] }) => {
         >
           {/* SENDER IMAGE */}
           <div className="flex items-center justify-center">
-            <Image
-              src={request.sender.avatar || "/noAvatar.png"}
-              alt="friend request sender image"
-              width={32}
-              height={32}
-              className="w-8 h-8 object-cover rounded-full"
-            />
+            <ProgressLink href={`/profile/${request.sender.id}`}>
+              <Image
+                src={request.sender.avatar || "/noAvatar.png"}
+                alt="friend request sender image"
+                width={32}
+                height={32}
+                className="w-8 h-8 object-cover rounded-full"
+              />
+            </ProgressLink>
           </div>
 
           {/* SENDER NAME */}

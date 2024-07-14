@@ -42,9 +42,8 @@ const FollowBlockUserButtons = ({
         isFollowRequestSent:
           !prev.isFollowing && !prev.isFollowRequestSent ? true : false,
       }));
-      toast.success("Followed");
     } catch (err) {
-      toast.error("Failed to follow, try again later.");
+      toast.error("Something went wrong, try again later.");
       console.log(err);
     }
   };

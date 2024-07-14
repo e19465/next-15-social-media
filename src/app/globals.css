@@ -2,60 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
 /* ** CLASS TO TEXT TO HAVE BLUE GRADIENT */
 
 .blue-gradient_text {
-    background: linear-gradient(to right, #0c3161, #4cacec);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+  background: linear-gradient(to right, #0c3161, #4cacec);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
-
-
-
 
 /* ** SMALL HORIZONTAL SCROLL BAR DESIGN */
 .custom-small-horizontal-scrollbar {
-    overflow-y: hidden;
-    overflow-x: auto;
+  overflow-y: hidden;
+  overflow-x: auto;
 }
 
 .custom-small-horizontal-scrollbar::-webkit-scrollbar {
-    height: 0px; /* For horizontal scrollbars */
+  height: 0px; /* For horizontal scrollbars */
 }
 
 .custom-small-horizontal-scrollbar:hover::-webkit-scrollbar {
-    height: 6px; /* For horizontal scrollbars */
+  height: 6px; /* For horizontal scrollbars */
 }
 
 .custom-small-horizontal-scrollbar::-webkit-scrollbar-track {
-    background-color: #e0e0e0;
+  background-color: #e0e0e0;
 }
 
 .custom-small-horizontal-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #afa7a7;
+  background-color: #afa7a7;
 }
 
 .custom-small-horizontal-scrollbar::-webkit-scrollbar-thumb:hover {
-    cursor: pointer;
-    background-color: #928a8a;
+  cursor: pointer;
+  background-color: #928a8a;
 }
 
 @media screen and (max-width: 768px) {
-    .custom-small-horizontal-scrollbar::-webkit-scrollbar {
-        display: none;
-    }
+  .custom-small-horizontal-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* **! END => SMALL HORIZONTAL SCROLL BAR DESIGN */
 
-
 /* ** SCROLLBAR HIDE CLASS */
 .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-    width: none;
+  display: none;
+  width: none;
 }
 
 /* **! END SCROLLBAR HIDE CLASS */
@@ -63,49 +57,65 @@
 /* ** Nprogress styles  */
 
 #nprogress {
-    pointer-events: none;
-  }
-  
-  #nprogress .bar {
-    background: linear-gradient(to right, #6a1b9a, #1e88e5); /* Purple and Blue gradient */
-    position: fixed;
-    z-index: 1031;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 4px; /* Adjust the height if needed */
-  }
-  
-  #nprogress .peg {
-    display: block;
-    position: absolute;
-    right: 0px;
-    width: 100px;
-    height: 100%;
-    box-shadow: 0 0 10px #6a1b9a, 0 0 5px #1e88e5; /* Adjust shadow colors */
-    opacity: 1.0;
-    transform: rotate(3deg) translate(0px, -4px);
-  }
-  
-  #nprogress .spinner {
-    display: none;
-  }
-  
+  pointer-events: none;
+}
+
+#nprogress .bar {
+  background: linear-gradient(
+    to right,
+    #6a1b9a,
+    #1e88e5
+  ); /* Purple and Blue gradient */
+  position: fixed;
+  z-index: 1031;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px; /* Adjust the height if needed */
+}
+
+#nprogress .peg {
+  display: block;
+  position: absolute;
+  right: 0px;
+  width: 100px;
+  height: 100%;
+  box-shadow: 0 0 10px #6a1b9a, 0 0 5px #1e88e5; /* Adjust shadow colors */
+  opacity: 1;
+  transform: rotate(3deg) translate(0px, -4px);
+}
+
+#nprogress .spinner {
+  display: none;
+}
 
 /* **! END Nprogress styles */
-
 
 /* ** custom button background with background images */
 
 .custom-btn-bg {
-    background-image: linear-gradient(45deg, #6f1a8a, #6c3daf, #6479d1, #68a5f0, #6cd4f9);
-    background-size: 200% 200%;
-    transition: background-position 0.5s ease-in-out;
+  background-image: linear-gradient(
+    45deg,
+    #6f1a8a,
+    #6c3daf,
+    #6479d1,
+    #68a5f0,
+    #6cd4f9
+  );
+  background-size: 200% 200%;
+  transition: background-position 0.5s ease-in-out;
 }
-  
+
 .custom-btn-bg:hover {
-    background-position: 200% 200%;
-    background-image: linear-gradient(45deg, #ab47bc, #ec407a, #f44336, #f06292, #f48fb1);
+  background-position: 200% 200%;
+  background-image: linear-gradient(
+    45deg,
+    #ab47bc,
+    #ec407a,
+    #f44336,
+    #f06292,
+    #f48fb1
+  );
 }
 
 /* **! end => custom button background with background images */

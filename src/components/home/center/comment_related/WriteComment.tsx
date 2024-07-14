@@ -3,6 +3,7 @@ import Image from "next/image";
 import React, { useOptimistic, useState } from "react";
 import { addComment } from "@/lib/actions";
 import { toast } from "react-toastify";
+import EmojiSelector from "@/components/EmojiSelector";
 
 //! types
 type ReplyCommentProps = ReplyComment & {
@@ -39,8 +40,10 @@ const WriteComment = ({
   setTotalCommentsLength,
   setOptimisticCommentsLength,
 }: WriteCommentProps) => {
-  // comment text area value
+  // states
   const [comment, setComment] = useState<string>("");
+  const [isEmojiSelectorOpen, setIsEmojiSelectorOpen] =
+    useState<boolean>(false);
 
   // handle the comment submission
   const handleSendComment = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -101,7 +104,7 @@ const WriteComment = ({
           value={comment}
           onChange={(e) => setComment(e.target.value)}
         />
-        <div className="flex gap-2 self-end p-2">
+        <div className="flex gap-2 self-end p-2 relative">
           <button type="button" title="select an emoji">
             <Image
               src="/emoji.png"
@@ -110,7 +113,9 @@ const WriteComment = ({
               width={24}
               height={24}
               className="w-5 h-5 object-cover cursor-pointer"
+              onClick={() => setIsEmojiSelectorOpen((prev) => !prev)}
             />
+            {isEmojiSelectorOpen && <EmojiSelector onSelect={setComment} />}
           </button>
           <button type="submit" title="send the comment">
             <Image

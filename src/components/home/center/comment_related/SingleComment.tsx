@@ -6,8 +6,8 @@ import { useOptimistic, useState } from "react";
 import ReplyComments from "./ReplyComments";
 
 //! image imports
-import LIKED_IMAGE from "../../../../public/liked.png";
-import LIKE_IMAGE from "../../../../public/like.png";
+import LIKED_IMAGE from "../../../../../public/liked.png";
+import LIKE_IMAGE from "../../../../../public/like.png";
 import CommentDeleteModel from "@/components/models/CommentDeleteModel";
 
 //! types

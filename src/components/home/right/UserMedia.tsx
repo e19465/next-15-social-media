@@ -27,7 +27,7 @@ const UserMedia = async ({ userId }: { userId: string }) => {
       </div>
 
       {/* BOTTOM */}
-      <div className="flex flex-wrap gap-4 justify-between">
+      <div className="flex flex-wrap gap-4 justify-start">
         {userPostsWithMedia.length ? (
           userPostsWithMedia?.map((post) => (
             <div className="relative w-1/5 h-24" key={post.id}>

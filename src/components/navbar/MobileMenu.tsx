@@ -27,18 +27,13 @@ const MobileMenu = () => {
     },
     {
       id: 3,
-      name: "Stories",
-      path: "/stories",
+      name: "Following",
+      path: "/following",
     },
     {
       id: 4,
-      name: "Friends",
-      path: "/friends",
-    },
-    {
-      id: 5,
-      name: "Settings",
-      path: "/settings",
+      name: "Followers",
+      path: "/followers",
     },
   ];
 

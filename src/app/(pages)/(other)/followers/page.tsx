@@ -1,14 +1,9 @@
-import { Metadata } from "next";
-import CenterMenu from "@/components/home/center/CenterMenu";
+import FollowersList from "@/components/home/center/followers_page/FollowersList";
 import LeftMenu from "@/components/home/left/LeftMenu";
 import RightMenu from "@/components/home/right/RightMenu";
+import React from "react";
 
-export const metadata: Metadata = {
-  title: "SDSOCIAL | Home",
-  description: "Profile page",
-};
-
-const Homepage = () => {
+const page = () => {
   return (
     <div className="w-full h-full flex gap-4">
       {/* LEFT */}
@@ -18,15 +13,15 @@ const Homepage = () => {
 
       {/* CENTER */}
       <div className="w-full lg:w-[70%] xl:w-[50%]">
-        <CenterMenu location="home" />
+        <FollowersList />
       </div>
 
       {/* RIGHT */}
       <div className="hidden lg:block lg:w-[30%] xl:w-[30%]">
-        <RightMenu location="home" />
+        <RightMenu location="other" />
       </div>
     </div>
   );
 };
 
-export default Homepage;
+export default page;

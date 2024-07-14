@@ -2,7 +2,8 @@ import Image from "next/image";
 import { Post, User } from "@prisma/client";
 import { prisma } from "@/lib/client";
 import { auth } from "@clerk/nextjs/server";
-import PostLikesCommentsCount from "./PostLikesCommentsCount";
+import PostLikesCommentsCount from "../comment_related/PostLikesCommentsCount";
+import PostDeleteButton from "./PostDeleteButton";
 
 type SinglePostProps = Post & {
   user: User;
@@ -29,6 +30,9 @@ const SinglePost = async ({ post }: { post: SinglePostProps }) => {
 
   // get the post owner
   const user = post?.user;
+
+  // check for the current user is the post owner
+  const isPostOwner = user.id === currentUser.id;
 
   // get the reply comments length
   const replyCommentsLength = await prisma.replyComment.count({
@@ -63,7 +67,7 @@ const SinglePost = async ({ post }: { post: SinglePostProps }) => {
   if (!comments) return null;
 
   return (
-    <div className="">
+    <div className="mb-4 bg-slate-50 shadow-blue-200 shadow-md rounded-md p-4 border-t-[2px] border-t-blue-500">
       {/* USER */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -72,7 +76,7 @@ const SinglePost = async ({ post }: { post: SinglePostProps }) => {
             alt="post owner profile photo"
             width={40}
             height={40}
-            className="w-10 h-10 object-cover rounded-full"
+            className="w-10 h-10 object-cover rounded-full ring-1 ring-blue-200"
           />
           <span className="font-medium text-gray-500 text-sm">
             {user?.name && user?.surname
@@ -80,15 +84,7 @@ const SinglePost = async ({ post }: { post: SinglePostProps }) => {
               : user.username}
           </span>
         </div>
-        <div className="cursor-pointer p-2 hover:bg-gray-200 rounded-full">
-          <Image
-            src="/more.png"
-            alt="post options"
-            width={16}
-            height={16}
-            className="object-contain"
-          />
-        </div>
+        {isPostOwner && <PostDeleteButton postId={post.id} />}
       </div>
       {/* DESCRIPTION */}
       <div className="flex flex-col">

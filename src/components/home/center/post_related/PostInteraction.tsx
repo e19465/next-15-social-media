@@ -6,8 +6,8 @@ import { switchLike } from "@/lib/actions";
 import { toast } from "react-toastify";
 
 //! image imports
-import LIKED_IMAGE from "../../../../public/liked.png";
-import LIKE_IMAGE from "../../../../public/like.png";
+import LIKED_IMAGE from "../../../../../public/liked.png";
+import LIKE_IMAGE from "../../../../../public/like.png";
 
 //! define types for the props
 type PostInteractionProps = Post & {

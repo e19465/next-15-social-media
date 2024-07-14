@@ -75,7 +75,9 @@ const Navbar = () => {
             <div className="flex items-center justify-center">
               <ClerkLoaded>
                 <SignedIn>
-                  <UserButton />
+                  <div className="ring-1 ring-blue-500 rounded-full flex items-center justify-center shadow-blue-200 shadow-md p-2">
+                    <UserButton />
+                  </div>
                 </SignedIn>
               </ClerkLoaded>
             </div>
