@@ -1,9 +1,8 @@
 import Image from "next/image";
-import PostInteraction from "./PostInteraction";
-import PostComments from "./PostComments";
 import { Post, User } from "@prisma/client";
 import { prisma } from "@/lib/client";
 import { auth } from "@clerk/nextjs/server";
+import PostLikesCommentsCount from "./PostLikesCommentsCount";
 
 type SinglePostProps = Post & {
   user: User;
@@ -37,6 +36,31 @@ const SinglePost = async ({ post }: { post: SinglePostProps }) => {
       postId: post.id,
     },
   });
+
+  const comments = await prisma.comment.findMany({
+    where: {
+      postId: post.id,
+    },
+    include: {
+      user: true,
+      likes: true,
+      replies: {
+        include: {
+          user: true,
+          likes: true,
+        },
+      },
+      _count: {
+        select: {
+          likes: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+  });
+  if (!comments) return null;
 
   return (
     <div className="">
@@ -87,19 +111,12 @@ const SinglePost = async ({ post }: { post: SinglePostProps }) => {
           </span>
         </div>
       </div>
-      {/* INTERACTION */}
-      <div className="w-full h-auto mt-4">
-        <PostInteraction
-          post={post}
-          replyCommentsLength={replyCommentsLength}
-          currentUser={currentUser}
-        />
-      </div>
-
-      {/* COMMENTS */}
-      <div className="w-full h-auto mt-4">
-        <PostComments postId={post.id} postOwnerId={post.userId} />
-      </div>
+      <PostLikesCommentsCount
+        post={post}
+        replyCommentsLength={replyCommentsLength}
+        currentUser={currentUser}
+        comments={comments}
+      />
     </div>
   );
 };

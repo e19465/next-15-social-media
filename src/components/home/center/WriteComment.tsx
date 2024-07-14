@@ -1,6 +1,6 @@
 import { Comment, Like, ReplyComment, User } from "@prisma/client";
 import Image from "next/image";
-import React, { use, useOptimistic, useState } from "react";
+import React, { useOptimistic, useState } from "react";
 import { addComment } from "@/lib/actions";
 import { toast } from "react-toastify";
 
@@ -23,7 +23,12 @@ type WriteCommentProps = {
   user: User;
   postId: number;
   setCommentsList: React.Dispatch<React.SetStateAction<SingleCommentProps[]>>;
-  setOptimisticCommentState: (value: SingleCommentProps) => void;
+  setOptimisticCommentState: (action: {
+    method: "increment" | "decrement";
+    value: SingleCommentProps;
+  }) => void;
+  setTotalCommentsLength: React.Dispatch<React.SetStateAction<number>>;
+  setOptimisticCommentsLength: (value: "increment" | "decrement") => void;
 };
 
 const WriteComment = ({
@@ -31,6 +36,8 @@ const WriteComment = ({
   postId,
   setCommentsList,
   setOptimisticCommentState,
+  setTotalCommentsLength,
+  setOptimisticCommentsLength,
 }: WriteCommentProps) => {
   // comment text area value
   const [comment, setComment] = useState<string>("");
@@ -58,7 +65,8 @@ const WriteComment = ({
 
     // add the optimistic comment to the comments list and optimistically update the UI
     const commentValue = comment;
-    setOptimisticCommentState(commentData);
+    setOptimisticCommentState({ method: "increment", value: commentData });
+    setOptimisticCommentsLength("increment");
     setComment("");
 
     try {
@@ -68,6 +76,7 @@ const WriteComment = ({
         return;
       }
       setCommentsList((prev) => [...prev, addedCommentResponse]);
+      setTotalCommentsLength((prev) => prev + 1);
     } catch (err) {
       setComment(commentValue);
       toast.error("Failed to post the comment");

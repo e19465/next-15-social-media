@@ -3,10 +3,9 @@ import { Like, ReplyComment, User } from "@prisma/client";
 import Image from "next/image";
 import SingleReply from "./SingleReply";
 import { useAuth, useUser } from "@clerk/nextjs";
-import { useState } from "react";
+import { useEffect, useOptimistic, useRef, useState } from "react";
 import { replyToComment } from "@/lib/actions";
 import { toast } from "react-toastify";
-import Spinner from "@/components/Spinner";
 
 type ReplyCommentsProps = ReplyComment & {
   user: User;
@@ -21,6 +20,10 @@ const ReplyComments = ({
   isReplyComponentOpen,
   postOwnerId,
   setIsReplyComponentOpen,
+  setTotalCommentsLength,
+  setOptimisticCommentsLength,
+  setReplyCount,
+  setOptimisticReplyCount,
 }: {
   postOwnerId: string;
   postId: number;
@@ -29,6 +32,10 @@ const ReplyComments = ({
   replies: ReplyCommentsProps[];
   isReplyComponentOpen: boolean;
   setIsReplyComponentOpen: (value: boolean) => void;
+  setTotalCommentsLength: React.Dispatch<React.SetStateAction<number>>;
+  setOptimisticCommentsLength: (value: "increment" | "decrement") => void;
+  setReplyCount: React.Dispatch<React.SetStateAction<number>>;
+  setOptimisticReplyCount: (value: "increment" | "decrement") => void;
 }) => {
   // get the current user from clerk
   const clerkUser = useUser();
@@ -45,7 +52,23 @@ const ReplyComments = ({
   const [replyComment, setReplyComment] = useState<string>("");
   const [repliesState, setRepliesState] =
     useState<ReplyCommentsProps[]>(replies);
-  const [isReplyLoading, setIsReplyLoading] = useState<boolean>(false);
+
+  // optimistically add a new reply comment
+  const [optimisticReplyState, setOptimisticReplyState] = useOptimistic(
+    repliesState,
+    (
+      prev: any,
+      { method, value }: { method: string; value: ReplyCommentsProps }
+    ) => {
+      if (method === "increment") {
+        return [...prev, value];
+      } else if (method === "decrement") {
+        return prev.filter(
+          (reply: ReplyCommentsProps) => reply.id !== value.id
+        );
+      }
+    }
+  );
 
   // handle the close of the model
   const handleClose = () => {
@@ -55,25 +78,50 @@ const ReplyComments = ({
   // form action to handle reply
   const handleReply = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsReplyLoading(true);
+    const value = replyComment.trim();
+
+    const dummyReply = {
+      id: Math.floor(Math.random() * 1000),
+      text: replyComment,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      userId: currentUserId,
+      commentId: commentId,
+      postId: postId,
+      user: currentUser,
+      likes: [],
+    };
+
+    setReplyComment("");
+    setOptimisticCommentsLength("increment");
+    setOptimisticReplyCount("increment");
+    setOptimisticReplyState({ method: "increment", value: dummyReply });
+
     try {
-      const res = await replyToComment(
-        postId,
-        commentId,
-        currentUserId,
-        replyComment
-      );
+      const res = await replyToComment(postId, commentId, currentUserId, value);
       if (res) {
         setRepliesState((prev) => [...prev, res]);
       }
+      setReplyCount((prev) => prev + 1);
+      setTotalCommentsLength((prev) => prev + 1);
       setReplyComment("");
-      setIsReplyLoading(false);
     } catch (err) {
-      setIsReplyLoading(false);
+      setReplyComment(value);
       toast.error("Failed to add reply comment");
       console.error(err);
     }
   };
+
+  // Ref for the comments container
+  const repliesContainerRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to the bottom when a new comment is added
+  useEffect(() => {
+    if (repliesContainerRef.current) {
+      repliesContainerRef.current.scrollTop =
+        repliesContainerRef.current.scrollHeight;
+    }
+  }, [optimisticReplyState]);
 
   return (
     <>
@@ -106,14 +154,23 @@ const ReplyComments = ({
               </div>
 
               {/* Reply Comments Section */}
-              <div className="w-full flex flex-col gap-4">
-                {repliesState.length !== 0 &&
-                  repliesState.map((singleReply) => (
+              <div
+                className="w-full flex flex-col gap-4"
+                ref={repliesContainerRef}
+              >
+                {optimisticReplyState.length !== 0 &&
+                  optimisticReplyState.map((singleReply: any) => (
                     <SingleReply
-                      setStateOfDocs={setRepliesState}
                       reply={singleReply}
                       key={singleReply.id}
                       postOwnerId={postOwnerId}
+                      setRepliesState={setRepliesState}
+                      setOptimisticCommentsLength={setOptimisticCommentsLength}
+                      setOptimisticReplyCount={setOptimisticReplyCount}
+                      setTotalCommentsLength={setTotalCommentsLength}
+                      setReplyCount={setReplyCount}
+                      setOptimisticReplyState={setOptimisticReplyState}
+                      currentUser={currentUser}
                     />
                   ))}
               </div>
@@ -143,26 +200,15 @@ const ReplyComments = ({
                         onChange={(e) => setReplyComment(e.target.value)}
                       />
                       <div className="flex items-center gap-2 self-end">
-                        <button
-                          type="submit"
-                          title="add post submit button"
-                          disabled={isReplyLoading}
-                          className={`${
-                            isReplyLoading && "cursor-not-allowed"
-                          }`}
-                        >
-                          {isReplyLoading ? (
-                            <p>...</p>
-                          ) : (
-                            <Image
-                              src="/share.png"
-                              alt="add new reply comment button"
-                              title="Add new reply comment button"
-                              width={24}
-                              height={24}
-                              className="w-5 h-5 object-cover cursor-pointer"
-                            />
-                          )}
+                        <button type="submit" title="add post submit button">
+                          <Image
+                            src="/share.png"
+                            alt="add new reply comment button"
+                            title="Add new reply comment button"
+                            width={24}
+                            height={24}
+                            className="w-5 h-5 object-cover cursor-pointer"
+                          />
                         </button>
                       </div>
                     </form>

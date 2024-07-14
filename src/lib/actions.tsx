@@ -462,22 +462,37 @@ export const switchReplyLikes = async (
   }
 };
 
-//! delete some document
-export const deleteDoc = async (
-  docId: number,
-  category: keyof PrismaClient
-) => {
-  if (!docId) throw new Error("You must provide a document to delete.");
-  if (!category) throw new Error("You must provide a category to delete.");
+//! delete comment
+export const deleteComment = async (commentId: number) => {
+  if (!commentId) throw new Error("You must provide a document to delete.");
 
   try {
     //! delete the document
-    const res = await (prisma[category] as any).delete({
+    const res = await prisma.comment.delete({
       where: {
-        id: docId,
+        id: commentId,
       },
     });
     if (!res) throw new Error("Document not found.");
+    return "deleted";
+  } catch (err) {
+    console.log(err);
+    throw new Error("Something went wrong. Please try again later.");
+  }
+};
+
+//! delete reply
+export const deleteReply = async (replyId: number) => {
+  if (!replyId) throw new Error("You must provide a reply to delete.");
+
+  try {
+    //! delete the reply
+    const res = await prisma.replyComment.delete({
+      where: {
+        id: replyId,
+      },
+    });
+    if (!res) throw new Error("Reply not found.");
     return "deleted";
   } catch (err) {
     console.log(err);

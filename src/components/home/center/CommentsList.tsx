@@ -24,6 +24,8 @@ type CommentsListProps = {
   postOwnerId: string;
   postId: number;
   currentUser: User;
+  setTotalCommentsLength: React.Dispatch<React.SetStateAction<number>>;
+  setOptimisticCommentsLength: (value: "increment" | "decrement") => void;
 };
 
 const CommentsList = ({
@@ -31,6 +33,8 @@ const CommentsList = ({
   postOwnerId,
   postId,
   currentUser,
+  setTotalCommentsLength,
+  setOptimisticCommentsLength,
 }: CommentsListProps) => {
   // set the comments list
   const [commentsList, setCommentsList] =
@@ -39,8 +43,18 @@ const CommentsList = ({
   // Optimistic UI for comments
   const [optimisticCommentState, setOptimisticCommentState] = useOptimistic(
     commentsList,
-    (prev, value: SingleCommentProps) => {
-      return [...prev, value];
+    (
+      prev: any,
+      { method, value }: { method: string; value: SingleCommentProps }
+    ) => {
+      if (method === "increment") {
+        return [...prev, value];
+      } else if (method === "decrement") {
+        return prev.filter(
+          (reply: SingleCommentProps) => reply.id !== value.id
+        );
+      }
+      return prev;
     }
   );
 
@@ -58,6 +72,8 @@ const CommentsList = ({
   return (
     <>
       <WriteComment
+        setTotalCommentsLength={setTotalCommentsLength}
+        setOptimisticCommentsLength={setOptimisticCommentsLength}
         user={currentUser}
         postId={postId}
         setOptimisticCommentState={setOptimisticCommentState}
@@ -67,7 +83,7 @@ const CommentsList = ({
         ref={commentsContainerRef}
         className="w-full flex flex-col gap-4 items-center max-h-[200px] overflow-auto scrollbar-hide"
       >
-        {optimisticCommentState.map((com) => (
+        {optimisticCommentState.map((com: SingleCommentProps) => (
           <SingleComment
             key={com.id}
             postOwnerId={postOwnerId}
@@ -75,6 +91,9 @@ const CommentsList = ({
             comment={com}
             currentUser={currentUser}
             setCommentsList={setCommentsList}
+            setTotalCommentsLength={setTotalCommentsLength}
+            setOptimisticCommentsLength={setOptimisticCommentsLength}
+            setOptimisticCommentState={setOptimisticCommentState}
           />
         ))}
       </div>

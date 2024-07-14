@@ -21,19 +21,16 @@ type PostInteractionProps = Post & {
 };
 
 const PostInteraction = ({
-  currentUser,
   post,
-  replyCommentsLength,
+  optimisticCommentsLength,
 }: {
-  currentUser: User;
   post: PostInteractionProps;
-  replyCommentsLength: number;
+  optimisticCommentsLength: number;
 }) => {
   // variables
   const likesArray = post?.likes;
   const ownerId = post?.userId;
   const likeCount = likesArray?.length;
-  const commentsCount = post?._count.comments;
 
   // check user is liked the post or not
   const isLiked = likesArray?.find((like) => like.userId === ownerId);
@@ -119,9 +116,7 @@ const PostInteraction = ({
             className="object-contain cursor-pointer"
           />
           <span className="text-gray-300">|</span>
-          <span className="text-gray-500">
-            {commentsCount + replyCommentsLength}
-          </span>
+          <span className="text-gray-500">{optimisticCommentsLength}</span>
           <span className="text-gray-400 hidden md:inline">Comments</span>
         </div>
       </div>

@@ -8,7 +8,7 @@ import ReplyComments from "./ReplyComments";
 //! image imports
 import LIKED_IMAGE from "../../../../public/liked.png";
 import LIKE_IMAGE from "../../../../public/like.png";
-import DeleteModel from "@/components/models/DeleteModel";
+import CommentDeleteModel from "@/components/models/CommentDeleteModel";
 
 //! types
 type ReplyCommentProps = ReplyComment & {
@@ -32,12 +32,21 @@ const SingleComment = ({
   currentUser,
   postOwnerId,
   setCommentsList,
+  setTotalCommentsLength,
+  setOptimisticCommentsLength,
+  setOptimisticCommentState,
 }: {
   postId: number;
   comment: SingleCommentProps;
   currentUser: User;
   postOwnerId: string;
   setCommentsList: React.Dispatch<React.SetStateAction<SingleCommentProps[]>>;
+  setTotalCommentsLength: React.Dispatch<React.SetStateAction<number>>;
+  setOptimisticCommentsLength: (value: "increment" | "decrement") => void;
+  setOptimisticCommentState: (action: {
+    method: "increment" | "decrement";
+    value: SingleCommentProps;
+  }) => void;
 }) => {
   // variables
   const userId = comment.user.id;
@@ -55,7 +64,7 @@ const SingleComment = ({
   const [isReplyComponentOpen, setIsReplyComponentOpen] =
     useState<boolean>(false);
   const [deleteClicked, setDeleteClicked] = useState<boolean>(false);
-  const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
+  const [replyCount, setReplyCount] = useState<number>(comment.replies.length);
 
   // optimistic UI state
   const [optimisticLikeAndCountState, setOptimisticLikeAndCountState] =
@@ -66,6 +75,18 @@ const SingleComment = ({
         likeCount: prev.isLiked ? prev.likeCount - 1 : prev.likeCount + 1,
       };
     });
+
+  const [optimisticReplyCount, setOptimisticReplyCount] = useOptimistic(
+    replyCount,
+    (prev: number, value: "increment" | "decrement") => {
+      if (value === "increment") {
+        return prev + 1;
+      } else if (value === "decrement") {
+        return prev - 1;
+      }
+      return prev; // Add this line to return the previous value if none of the conditions are met
+    }
+  );
 
   // handle comment likes and like count
   const handleCommentLikesAndLikeCount = async () => {
@@ -137,7 +158,7 @@ const SingleComment = ({
             className="text-xs text-gray-500 cursor-pointer bg-transparent outline-none border-none"
             onClick={() => setIsReplyComponentOpen(true)}
           >
-            {`Reply (${comment.replies.length})`}
+            {`Reply (${optimisticReplyCount})`}
           </button>
           {isAbleToDelete && (
             <button
@@ -160,17 +181,22 @@ const SingleComment = ({
         replies={comment.replies}
         isReplyComponentOpen={isReplyComponentOpen}
         setIsReplyComponentOpen={setIsReplyComponentOpen}
+        setTotalCommentsLength={setTotalCommentsLength}
+        setOptimisticCommentsLength={setOptimisticCommentsLength}
+        setReplyCount={setReplyCount}
+        setOptimisticReplyCount={setOptimisticReplyCount}
       />
 
       {/* DELET MODEL */}
       {deleteClicked && (
-        <DeleteModel
+        <CommentDeleteModel
+          setTotalCommentsLength={setTotalCommentsLength}
+          setOptimisticCommentsLength={setOptimisticCommentsLength}
           setDeleteClicked={setDeleteClicked}
-          deleteLoading={deleteLoading}
-          setDeleteLoading={setDeleteLoading}
-          docId={comment.id}
-          category="comment"
-          setStateOfDocs={setCommentsList}
+          commentId={comment.id}
+          setCommentsList={setCommentsList}
+          setOptimisticCommentState={setOptimisticCommentState}
+          currentUser={currentUser}
         />
       )}
     </div>

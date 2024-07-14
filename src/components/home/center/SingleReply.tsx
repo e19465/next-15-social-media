@@ -7,7 +7,7 @@ import { switchReplyLikes } from "@/lib/actions";
 //! image imports
 import LIKED_IMAGE from "../../../../public/liked.png";
 import LIKE_IMAGE from "../../../../public/like.png";
-import DeleteModel from "@/components/models/DeleteModel";
+import CoomentReplyDeleteModel from "@/components/models/CoomentReplyDeleteModel";
 
 type ReplyCommentProps = ReplyComment & {
   user: User;
@@ -17,11 +17,26 @@ type ReplyCommentProps = ReplyComment & {
 const SingleReply = ({
   reply,
   postOwnerId,
-  setStateOfDocs,
+  setRepliesState,
+  setOptimisticCommentsLength,
+  setOptimisticReplyCount,
+  setTotalCommentsLength,
+  setReplyCount,
+  setOptimisticReplyState,
+  currentUser,
 }: {
   reply: ReplyCommentProps;
   postOwnerId: string;
-  setStateOfDocs: React.Dispatch<React.SetStateAction<ReplyCommentProps[]>>;
+  setRepliesState: React.Dispatch<React.SetStateAction<ReplyCommentProps[]>>;
+  setOptimisticCommentsLength: (value: "increment" | "decrement") => void;
+  setOptimisticReplyCount: (value: "increment" | "decrement") => void;
+  setTotalCommentsLength: React.Dispatch<React.SetStateAction<number>>;
+  setReplyCount: React.Dispatch<React.SetStateAction<number>>;
+  setOptimisticReplyState: (action: {
+    method: "increment" | "decrement";
+    value: ReplyCommentProps;
+  }) => void;
+  currentUser: User;
 }) => {
   // get the current user id
   const { userId: currentUserId } = useAuth();
@@ -43,7 +58,6 @@ const SingleReply = ({
       likeCount: replyLikeCount,
     });
   const [deleteClicked, setDeleteClicked] = useState<boolean>(false);
-  const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
 
   // optimistic UI state for like and like count
   const [optimisticLikeAndCountState, setOptimisticLikeAndCountState] =
@@ -131,13 +145,16 @@ const SingleReply = ({
 
       {/* DELET MODEL */}
       {deleteClicked && (
-        <DeleteModel
+        <CoomentReplyDeleteModel
           setDeleteClicked={setDeleteClicked}
-          deleteLoading={deleteLoading}
-          setDeleteLoading={setDeleteLoading}
-          docId={reply.id}
-          category="replyComment"
-          setStateOfDocs={setStateOfDocs}
+          setOptimisticCommentsLength={setOptimisticCommentsLength}
+          setOptimisticReplyCount={setOptimisticReplyCount}
+          replyId={reply.id}
+          setRepliesState={setRepliesState}
+          setOptimisticReplyState={setOptimisticReplyState}
+          setTotalCommentsLength={setTotalCommentsLength}
+          setReplyCount={setReplyCount}
+          currentUser={currentUser}
         />
       )}
     </div>

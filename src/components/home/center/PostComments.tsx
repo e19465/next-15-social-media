@@ -1,63 +1,45 @@
-import Image from "next/image";
-import SingleComment from "./SingleComment";
-import { prisma } from "@/lib/client";
-import { auth } from "@clerk/nextjs/server";
 import CommentsList from "./CommentsList";
+import React from "react";
+import { Comment, Like, ReplyComment, User } from "@prisma/client";
 
-const PostComments = async ({
+type ReplyCommentProps = ReplyComment & {
+  user: User;
+  likes: Like[];
+};
+
+type SingleCommentProps = Comment & {
+  user: User;
+  likes: Like[];
+  replies: ReplyCommentProps[];
+  _count: {
+    likes: number;
+  };
+};
+
+const PostComments = ({
   postId,
   postOwnerId,
+  setTotalCommentsLength,
+  setOptimisticCommentsLength,
+  currentUser,
+  comments,
 }: {
   postId: number;
   postOwnerId: string;
+  setTotalCommentsLength: React.Dispatch<React.SetStateAction<number>>;
+  setOptimisticCommentsLength: (value: "increment" | "decrement") => void;
+  currentUser: User;
+  comments: SingleCommentProps[];
 }) => {
-  // get the current user ID
-  const { userId } = auth();
-  if (!userId) return null;
-
-  // fetch the current user
-  const user = await prisma.user.findUnique({
-    where: {
-      id: userId,
-    },
-  });
-
-  // if the user is not found return null
-  if (!user) return null;
-
-  // get all the comments for the post with replies and likes
-  const comments = await prisma.comment.findMany({
-    where: {
-      postId: postId,
-    },
-    include: {
-      user: true,
-      likes: true,
-      replies: {
-        include: {
-          user: true,
-          likes: true,
-        },
-      },
-      _count: {
-        select: {
-          likes: true,
-        },
-      },
-    },
-    orderBy: {
-      createdAt: "asc",
-    },
-  });
-  if (!comments) return null;
-
   return (
     <div className="w-full flex flex-col items-center gap-4">
       <CommentsList
         comments={comments}
         postOwnerId={postOwnerId}
         postId={postId}
-        currentUser={user}
+        currentUser={currentUser}
+        setTotalCommentsLength={setTotalCommentsLength}
+        setOptimisticCommentsLength={setOptimisticCommentsLength}
       />
     </div>
   );
