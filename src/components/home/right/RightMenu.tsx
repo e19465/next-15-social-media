@@ -1,9 +1,9 @@
 import { Suspense } from "react";
-import Ads from "./Ads";
-import BirthDays from "./BirthDays";
-import FriendRequests from "./FriendRequests";
-import UserInformation from "./UserInformation";
-import UserMedia from "./UserMedia";
+import Ads from "./ads/Ads";
+import BirthDays from "./birthdays/BirthDays";
+import FriendRequests from "./friend_requests/FriendRequests";
+import UserInformation from "./user_information_card/UserInformation";
+import UserMedia from "./user_media_card/UserMedia";
 import Spinner from "@/components/Spinner";
 
 const RightMenu = ({
