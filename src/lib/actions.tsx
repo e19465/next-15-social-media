@@ -248,6 +248,7 @@ export const updateUserInformation = async (userId: string, data: any) => {
         id: userId,
       },
       data: {
+        media: "", // Add the 'media' property with an empty string value
         ...data,
       },
     });
@@ -579,6 +580,46 @@ export const ownerDeletePost = async (postId: number) => {
     });
     if (!res) throw new Error("Post not found.");
     return "deleted";
+  } catch (err) {
+    console.log(err);
+    throw new Error("Something went wrong. Please try again later.");
+  }
+};
+
+//! add new story
+export const addNewStory = async (userId: string, img: string) => {
+  if (!userId) throw new Error("You must provide a user to add a story.");
+  if (!img) throw new Error("You must provide an image to add a story.");
+
+  try {
+    //! check for existing story
+    const existingStory = await prisma.story.findFirst({
+      where: {
+        userId: userId,
+      },
+    });
+
+    //! If there is an existing story, delete it
+    if (existingStory) {
+      await prisma.story.delete({
+        where: {
+          id: existingStory.id,
+        },
+      });
+    }
+
+    //! Create a new story
+    const story = await prisma.story.create({
+      data: {
+        userId: userId,
+        img: img,
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // Set expiresAt to 24 hours from now
+      },
+      include: {
+        user: true,
+      },
+    });
+    return story;
   } catch (err) {
     console.log(err);
     throw new Error("Something went wrong. Please try again later.");

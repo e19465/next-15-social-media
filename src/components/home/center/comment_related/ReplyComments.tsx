@@ -176,7 +176,7 @@ const ReplyComments = ({
               </div>
 
               {/* ADD REPLY COMPONENT */}
-              <div className="w-full p-2 sticky bottom-0 left-0 z-[1000]">
+              <div className="w-full p-2 sticky bottom-0 left-0 z-[900]">
                 <div className="p-4 bg-white rounded-lg flex gap-4 justify-between text-sm shadow-md mt-4">
                   {/* AVATAR */}
                   <Image
